@@ -15,3 +15,21 @@
 @media (min-width: 640px) {
   .arena { grid-template-columns: minmax(0,1fr) minmax(215px,29%); }
 }
+
+/* Source-only art preview; no changes to rules or default styling. */
+.art-preview .game,.art-preview .shell {
+  background:linear-gradient(90deg,#102027b3,#10202766 55%,#102027c9),url('../art/source/battlefield/first_ford.png') center / cover no-repeat,#102027;
+}
+.art-preview .lane{background:#152c3294;}
+.art-preview .top{background:#102027cf;}
+.art-preview .panel{background:#152c32ed;}
+.art-preview .has-art{position:relative;isolation:isolate;overflow:hidden;}
+.art-preview .preview-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%;opacity:0;z-index:-2;pointer-events:none;}
+.art-preview .has-art .preview-art{opacity:1;}
+.art-preview .has-art::before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#102027b8 0%,#10202722 38%,#102027e8 100%);pointer-events:none;}
+.art-preview .has-art,.art-preview .has-art .cost,.art-preview .has-art .stats,.art-preview .has-art .label{color:#fff4d9;text-shadow:0 1px 3px #000,0 0 5px #000;}
+.art-preview .choices .has-art{min-height:64px;}
+.art-preview .slot.has-art{justify-content:space-between;}
+.art-preview .slot.has-art strong{background:#102027a0;border-radius:3px;padding:1px 3px;}
+.art-preview .card.has-art .name{background:#102027a0;border-radius:3px;padding:1px 3px;}
+.art-preview .slot.legal.has-art{border:2px solid #ffe3a1;}

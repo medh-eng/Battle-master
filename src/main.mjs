@@ -2,6 +2,21 @@ import {defs, tactics, unit, newBattle, legal, apply, clash, resolve, next, aiAc
 import {firstFordLesson} from './first-ford.mjs';
 
 const root = document.querySelector('#app');
+// Unapproved source art is opt-in on this review branch only.
+const artPreview = new URLSearchParams(location.search).get('art') === '1';
+const batchOne = new Set(['sword1','sword2','bow1','spear1','rider1','levy','watch','stitch','screen','courier']);
+function addArt(el, id) {
+  if (!artPreview || !batchOne.has(id)) return;
+  const img = document.createElement('img');
+  img.alt = '';
+  img.decoding = 'async';
+  img.className = 'preview-art';
+  img.addEventListener('error', () => { img.remove(); el.classList.remove('has-art'); });
+  img.addEventListener('load', () => el.classList.add('has-art'));
+  img.src = './art/source/card/' + id + '.png';
+  el.prepend(img);
+}
+if (artPreview) document.body.classList.add('art-preview');
 const lanes = ['Road', 'Ridge'];
 const orders = lanes.flatMap((_, lane) => ['press', 'hold'].map(kind => ({lane, kind})));
 const familyNames = {sword: 'Sword', spear: 'Spear', rider: 'Cavalry', bow: 'Bow'};
@@ -48,6 +63,7 @@ function title() {
       else families = [...families.slice(-1), id];
       title();
     });
+    addArt(b, id + '1');
     b.setAttribute('aria-pressed', families.includes(id));
     root.querySelector('.choices').append(b);
   }
@@ -116,6 +132,7 @@ function slot(side, lane, rank, actions) {
   b.append(element('span', (side ? 'Rival ' : 'Your ') + (rank ? 'rear' : 'lead'), 'label'));
   if (u) b.append(element('strong', u.name), element('span', stats(u) + (u.guard ? ' · G ' + u.guard : ''), 'stats'));
   else b.append(element('small', target ? 'Deploy here' : 'Empty'));
+  if (u) addArt(b, u.id);
   return b;
 }
 function renderOrders(panel) {
@@ -198,6 +215,7 @@ function renderHand(hand, actions) {
     }, 'card' + (selected === h ? ' picked' : ''));
     b.append(element('span', (u?.cost ?? 1) + ' SUPPLY · ' + (u?.family ?? 'tactic').toUpperCase(), 'cost'),
       element('span', label(id), 'name'), element('span', u ? stats(u) : 'Tactic', 'stats'));
+    addArt(b, id);
     b.setAttribute('aria-pressed', selected === h);
     hand.append(b);
   });
