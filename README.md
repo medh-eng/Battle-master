@@ -1,12 +1,14 @@
 # Battle Master — The Bell Marches
 
-Standalone mobile-landscape roguelike card game. Based on the 26 November 2026 design plan. Yuddh is a read-only reference; no Yuddh source or assets imported.
+A landscape card duel at First Ford. Pick two regiments, muster on Road and Ridge, and secretly commit one order. Both lanes resolve together.
 
-## First duel prototype
-Requires a modern browser. Run `python3 -m http.server 8080` in the repository and open http://localhost:8080. Choose two regiments, deploy via tap, pass muster, select a secret order, then reveal. The fixed seed can be replayed. The prototype has no external network dependencies.
+## Play First Ford
 
-Run `npm test` with Node 20+ (no dependencies). Tests include the page 4 worked clash, seed determinism and simulated duels. CI/device testing not yet verified.
+Run `npm start` from the repository and open <http://localhost:8080>. The game requires a modern browser and Python 3 for the local server. Game code and styles are served locally.
 
-Architecture decision: browser-native JavaScript and semantic HTML/CSS initially, with a later Capacitor Android wrapper and optional PixiJS renderer inspired by Yuddh. This deviates from the PDF's Unity proposal.
+- **Learn one clash** starts at the position on page 4 of the design PDF. Try Press Road, then replay with Hold Ridge to see how two fort HP can turn on one decision.
+- **Enter First Ford** starts a full seeded duel. Tap a card and a highlighted slot to deploy, pass muster, preview an order and reveal. A broken fort or the eighth clash ends the duel.
 
-See [roadmap](docs/ROADMAP.md) and [asset handoff](docs/ASSETS.md). No final art or audio, camp, five-stop campaign, persistence or APK yet.
+Run `npm test` with Node 20 or later. The engine tests have no package dependencies.
+
+The project uses the original five-duel Bell Marches plan and a web-first implementation. Yuddh informed the separation of engine and presentation and the coached first decision. See the [phase roadmap](docs/ROADMAP.md) and [art and sound handoff](docs/ASSETS.md).
