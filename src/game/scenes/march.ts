@@ -18,7 +18,7 @@ import {
   rivalArmy, routeOptions, structureUpgrades, takeReward, train, trainCost, upgradeGate, upgradeStructure,
   type Family, type Result, type RunState
 } from '../../run/run';
-import { armyLine } from '../../run/battle';
+import { armyLine, rivalArt } from '../../run/battle';
 
 /* ---------------- shared frame ---------------- */
 const CSS = `
@@ -67,6 +67,7 @@ const CSS = `
 #bm-ui .tag{display:inline-block;font:700 .75em Cinzel,serif;color:#1a1008;background:#e7c46e;border-radius:4px;padding:0 .4em;margin-right:.3em}
 #bm-ui .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(80px,14vh,130px),1fr));gap:.7em}
 #bm-ui .lock{filter:grayscale(1) brightness(.35)}
+#bm-ui .portrait{object-fit:cover;border:3px solid #d4a94f}
 #bm-ui .zoom{position:fixed;inset:0;background:rgba(0,0,0,.8);display:grid;place-items:center;z-index:9}
 #bm-ui .zoom img{height:88vh;border-radius:14px}
 `;
@@ -111,6 +112,19 @@ function face(id: string, cls = 'face'): HTMLElement {
   const img = h('img', { class: cls, src: cardFaceUrl(id), alt: CARDS[id]?.name ?? id, draggable: 'false' });
   img.addEventListener('click', () => {
     const z = h('div', { class: 'zoom' }, h('img', { src: cardFaceUrl(id) }));
+    z.addEventListener('click', () => z.remove());
+    img.closest('#bm-ui')?.appendChild(z);
+  });
+  return img;
+}
+/** a commander's portrait (falls back to their signature card until painted); a tap opens it large */
+function portrait(rival: string, hero: string): HTMLElement {
+  const id = rivalArt(rival);
+  if (!hasArt(id)) return face(hero);
+  const src = `${import.meta.env.BASE_URL}assets/cards/${id}.webp`;
+  const img = h('img', { class: 'face portrait', src, alt: RIVALS[rival]?.name ?? rival, draggable: 'false' });
+  img.addEventListener('click', () => {
+    const z = h('div', { class: 'zoom' }, h('img', { src }));
     z.addEventListener('click', () => z.remove());
     img.closest('#bm-ui')?.appendChild(z);
   });
@@ -180,7 +194,7 @@ export function routeScreen(stage: Stage, s: RunState, done: () => void, quit: (
         const r = RIVALS[n.rival];
         const rv = rivalArmy(s, n);
         return h('div', { class: 'panel roadcard' },
-          face(r.hero),
+          portrait(n.rival, r.hero),
           h('div', {},
             h('h2', {}, n.name),
             h('div', {}, h('span', { class: 'tag' }, n.kind === 'final' ? 'FINAL' : n.kind === 'elite' ? 'ELITE +3 gold' : 'DUEL'), h('b', {}, `${r.name}`), `, ${r.title}`),
@@ -194,7 +208,7 @@ export function routeScreen(stage: Stage, s: RunState, done: () => void, quit: (
 
 /* ---------------- 3. camp ---------------- */
 export function campScreen(stage: Stage, s: RunState, save: () => void, march: () => void, quit: () => void): Scene {
-  return domScene(stage, 'first_ford', 'music_camp', root => {
+  return domScene(stage, currentNode(s)?.battlefield ?? 'first_ford', 'music_camp', root => {
     let msg: Result | null = null;
     let fuseA: number | null = null;
     let tab: 'army' | 'fort' | 'deck' = 'army';
@@ -272,7 +286,7 @@ export function campScreen(stage: Stage, s: RunState, save: () => void, march: (
         topBar(s),
         h('h1', {}, 'Camp'),
         h('div', { class: 'panel row', style: 'align-items:center' },
-          h('div', { style: 'width:clamp(60px,12vh,110px)' }, face(r.hero)),
+          h('div', { style: 'width:clamp(60px,12vh,110px)' }, portrait(n.rival, r.hero)),
           h('div', { style: 'flex:1;min-width:14em' }, h('h2', {}, `Next: ${r.name} at ${n.name}`),
             h('div', { class: 'small' }, WEATHER[n.weather]),
             h('div', { class: 'small' }, `Their army (same budget as yours): ${armyLine(rv)}`)),

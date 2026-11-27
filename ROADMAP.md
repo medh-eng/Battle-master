@@ -14,7 +14,7 @@
 - [x] Balance sweep (first seat ~49%, commanders 43–60%)
 
 ## Phase 2: Look and teach
-- [ ] Art batch 03: hybrids, structures, tactics, battlefields, commanders, fort
+- [x] Art batch 03: hybrids, structures, tactics, battlefields, commanders, fort (PR #5, wired in Nov 2026)
 - [ ] Coached first battle
 - [ ] Evolution and fusion animations at camp
 
