@@ -18,7 +18,7 @@ function addArt(el, id) {
 }
 if (artPreview) {
   document.body.classList.add('art-preview');
-  if (battlefieldArt) document.body.style.setProperty('--battlefield-art', 'url("' + battlefieldArt + '")');
+  if (battlefieldArt) document.body.style.setProperty('--battlefield-art', 'url("' + new URL(battlefieldArt, document.baseURI).href + '")');
 }
 const lanes = ['Road', 'Ridge'];
 const orders = lanes.flatMap((_, lane) => ['press', 'hold'].map(kind => ({lane, kind})));
