@@ -10,7 +10,8 @@ A roguelike card war in the tradition of KARDS, built on the engine of [YUDDH](h
 | --- | --- | --- |
 | 0 | Yuddh engine and renderer ported (TypeScript, PixiJS 8, GSAP, Vite, Vitest); Unity/ChatGPT prototype retired | Done (27 Nov 2026) |
 | 1 | Full march: muster, 7 stops with forks, camp (recruit, train ★, evolve I–IV, fuse hybrids, fort), rewards, second chance, equal rivals, save and resume, Codex, Quick duel | Done: playable, balance-simulated |
-| 2 | Art batch 03 (12 hybrids, 7 structures, 6 tactics, 9 battlefields, 10 commanders, fort), coached first battle | Next |
+| 2 | Art batch 03 (12 hybrids, 7 structures, 6 tactics, 9 battlefields, 10 commanders, fort) | Done |
+| 3 | Coached first battle, camp evolve/fuse animations | Next |
 | 3 | Daily march (seeded), more tactics and rival archetypes, Veteran AI tuning | |
 | 4 | Android (Capacitor, as in Yuddh), store listing | |
 

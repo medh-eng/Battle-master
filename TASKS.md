@@ -12,7 +12,8 @@
 
 ## Next
 - [ ] Pon: play two or three marches on a phone; note anything confusing or any card that feels useless or too strong
-- [ ] Pon: paint art batch 03 (`art/PROMPTS-BATCH-03.md`); drop files in `art/source/cards/` and `art/source/battlefields/`, then Claude runs `npm run assets` and swaps rival heroes to their portraits in run.json
+- [x] Art batch 03 painted (PR #5) and wired: commander portraits on rival Forts, the road and camp (`r_<rival>`); `fort_wagon` on your Fort; camp backdrop is the next battlefield
+- [ ] Optional art: a portrait card face for each commander's briefing/end screen (they still show their signature card there)
 - [ ] Coached first battle (Yuddh's coach layer exists in battle.ts; needs English steps and a fixed First Ford deal)
 - [ ] Camp: show a before/after card when evolving or fusing (animation), and the deck count change
 - [ ] Rival preview: show the rival's regiment cards as faces, not only text

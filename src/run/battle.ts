@@ -10,7 +10,9 @@ import type { Scenario } from '../campaign/scenario';
 import { DATA, GATES, RIVALS, currentNode, deckOf, playId, rivalArmy, structuresOf, thornsOf, type RivalArmy, type RunState } from './run';
 
 const WEATHER = DATA.weatherText as Record<string, string>;
-export const PLAYER_FORT_ART = 't_screen';
+/** the painting on your Fort plaque, and a rival's portrait on theirs (r_<rival id>) */
+export const PLAYER_FORT_ART = 'fort_wagon';
+export const rivalArt = (rival: string): string => `r_${rival}`;
 export const STOP_LABEL = ['First stop', 'Second stop', 'Third stop', 'Fourth stop', 'Fifth stop', 'Sixth stop', 'The final stop'];
 
 /** one line describing an army, strongest regiments first */
@@ -56,7 +58,7 @@ export function runScenario(s: RunState, finish: (won: boolean, st: GameState) =
     heroCard: r.hero,
     defeatCard: r.hero,
     enemyName: r.name,
-    durgArt: [PLAYER_FORT_ART, r.hero],
+    durgArt: [PLAYER_FORT_ART, rivalArt(node.rival)],
     winText: turn => `${r.name} lowers the colours in round ${turn}. The road ahead is open.`,
     loseText: `${r.name} holds the road. ${s.retries > 0 ? 'Your march can regroup once.' : 'The march ends here.'}`,
     goLabel: 'To battle',

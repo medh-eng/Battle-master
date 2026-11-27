@@ -65,7 +65,7 @@ Design pillars:
 ## World, art and sound
 
 - Original world, the Bell Marches: woodcut paintings on dyed paper, indigo cloth, copper, warm ivory (Pon's approved batch 02). Every name is invented. English only.
-- 21 paintings delivered (4 families × 4 forms, Levy, 4 tactics) + First Ford. Missing art shows a placeholder: hybrids show their two parents split on a diagonal; others a woodcut emblem. Prompts: `art/PROMPTS-BATCH-03.md`.
+- All 57 paintings delivered (families, Levy, hybrids, structures, tactics, the wagon-fort, 10 commanders) and all 10 battlefields. Cards show the painting full width with no arch. Commander portraits (`r_<rival>`) appear on the rival Fort plaque, the road and the camp; the camp backdrop is the next battlefield. Any future card without art still falls back to a placeholder (hybrids: parents split on a diagonal; others: a woodcut emblem).
 - Music: original, rendered by `scripts/compose.py` from the bell motif D4–F4–E4–A4 (a question that resolves to D only at the final victory): title, camp, briefing, battle calm, battle intense, victory, defeat, and the battle-start bell. Pon may replace any piece by dropping a file of the same name into `art/source/sfx/`.
 - Sound effects: Pixabay set from Yuddh (no Indian conch: the bell call replaces it).
 
