@@ -2,6 +2,8 @@
 
 Match batch 02 exactly: **woodcut print on dyed paper, indigo cloth, copper fittings, warm ivory and amber sky, strong black linework, visible paper grain, limited palette (indigo, rust, ivory, amber, slate)**. Same faces and costumes as the family cards where a unit descends from them (the swordsman with the striped shield, the bow-woman with braided hair, the blue-capped rider and spearman). No text, no borders, no frames, full subject with headroom.
 
+**Composition (the cards now show your painting full width, with no arch or frame):** keep the subject in the upper two-thirds and the middle of the picture. The name ribbon covers the bottom fifth of a card, and the unit badges sit in the lower corners. Paint right to the edges; nothing needs to be saved for a border.
+
 Save each file with the exact name shown and upload to the folder named. Claude converts them (`npm run assets`); a missing file just keeps its placeholder.
 
 Common style line to paste after each prompt:

@@ -1,6 +1,6 @@
 /* ============================================================
    Card painter. Each card face and board token is painted once on
-   a 2D canvas — material frame, arch-topped painting, cost coin,
+   a 2D canvas — thin edge, full-width painting, cost coin,
    name ribbon, palm-leaf text, stat badges — then handed to Pixi
    as a single texture. Painted at 2× for sharpness.
    ============================================================ */
@@ -76,19 +76,9 @@ function roundRect(g: CanvasRenderingContext2D, x: number, y: number, w: number,
   g.beginPath(); g.roundRect(x, y, w, h, r);
 }
 
-/** jharokha arch: straight sides, a cusped (lobed) top */
+/** the painting's window: a plain rounded rectangle, so no arch ever covers the art */
 function archPath(g: CanvasRenderingContext2D, x: number, y: number, w: number, h: number): void {
-  const r = w / 2, cy = y + r * 0.62;
-  g.beginPath();
-  g.moveTo(x, y + h);
-  g.lineTo(x, cy);
-  // three lobes across the top, the middle one tallest
-  g.quadraticCurveTo(x, y + r * 0.18, x + w * 0.24, y + r * 0.2);
-  g.quadraticCurveTo(x + w * 0.33, y - r * 0.02, x + w * 0.5, y);
-  g.quadraticCurveTo(x + w * 0.67, y - r * 0.02, x + w * 0.76, y + r * 0.2);
-  g.quadraticCurveTo(x + w, y + r * 0.18, x + w, cy);
-  g.lineTo(x + w, y + h);
-  g.closePath();
+  g.beginPath(); g.roundRect(x, y, w, h, 14);
 }
 
 /** the painting a placeholder can borrow: a hybrid shows its two parents side by side until its own art arrives */
@@ -294,20 +284,18 @@ export function cardFace(id: string, upgrade = 0, cost?: number): Texture {
   g.lineWidth = 2; g.strokeStyle = 'rgba(255,240,200,0.45)'; g.stroke();
 
   // painting in a cusped arch
-  const ax = 28, ay = 34, aw = W - 56, ah = 404;
+  const ax = 6, ay = 6, aw = W - 12, ah = 432;
   g.save();
   archPath(g, ax, ay, aw, ah);
   g.clip();
   drawArt(g, id, ax, ay, aw, ah, 0.3);
   // lamp-light vignette over the painting
   const vg = g.createRadialGradient(W / 2, ay + ah * 0.45, ah * 0.25, W / 2, ay + ah * 0.5, ah * 0.85);
-  vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(10,5,0,0.55)');
+  vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(10,5,0,0.18)');
   g.fillStyle = vg; g.fillRect(ax, ay, aw, ah);
   g.restore();
   archPath(g, ax, ay, aw, ah);
-  g.lineWidth = 6; g.strokeStyle = 'rgba(20,10,4,0.95)'; g.stroke();
-  archPath(g, ax - 4, ay - 4, aw + 8, ah + 4);
-  g.lineWidth = 2.5; g.strokeStyle = '#e7c46e'; g.stroke();
+  g.lineWidth = 3; g.strokeStyle = 'rgba(20,10,4,0.95)'; g.stroke();
 
   // name ribbon
   const ry = ay + ah - 30;
@@ -445,9 +433,9 @@ export function tokenFace(id: string, owner: 0 | 1, plate = true): Texture {
   material(g, c.empire, W, H);
   g.lineWidth = 4; g.strokeStyle = 'rgba(20,10,4,0.95)'; g.stroke();
   // without a plate, the owner's colour runs round the frame instead
-  if (!plate) { roundRect(g, 5, 5, W - 10, H - 10, 18); g.lineWidth = 5; g.strokeStyle = owner === 0 ? '#d4a94f' : '#e0674a'; g.stroke(); }
+  if (!plate) { roundRect(g, 3, 3, W - 6, H - 6, 18); g.lineWidth = 4; g.strokeStyle = owner === 0 ? '#d4a94f' : '#e0674a'; g.stroke(); }
 
-  const ax = plate ? 18 : 14, ay = plate ? 20 : 16, aw = W - ax * 2, ah = plate ? H - 98 : H - 32;
+  const ax = plate ? 6 : 4, ay = plate ? 6 : 4, aw = W - ax * 2, ah = plate ? H - 84 : H - 8;
   g.save(); archPath(g, ax, ay, aw, ah); g.clip();
   drawArt(g, id, ax, ay, aw, ah, 0.28);
   // darker towards the bottom, where the attack and health badges sit
@@ -455,8 +443,7 @@ export function tokenFace(id: string, owner: 0 | 1, plate = true): Texture {
   vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(10,5,0,0.7)');
   g.fillStyle = vg; g.fillRect(ax, ay, aw, ah);
   g.restore();
-  archPath(g, ax, ay, aw, ah); g.lineWidth = 5; g.strokeStyle = 'rgba(20,10,4,0.95)'; g.stroke();
-  archPath(g, ax - 3, ay - 3, aw + 6, ah + 3); g.lineWidth = 2; g.strokeStyle = '#e7c46e'; g.stroke();
+  archPath(g, ax, ay, aw, ah); g.lineWidth = 3; g.strokeStyle = 'rgba(20,10,4,0.95)'; g.stroke();
 
   if (plate) {
     // nameplate in the owner's colour: gold-lacquer for you, vermilion for the enemy
@@ -494,7 +481,7 @@ export function durgFace(artId: string, owner: 0 | 1): Texture {
   bg.addColorStop(0, owner === 0 ? '#5a4020' : '#5a2016'); bg.addColorStop(1, '#140b05');
   g.fillStyle = bg; g.fill();
   g.lineWidth = 6; g.strokeStyle = owner === 0 ? '#d4a94f' : '#e0674a'; g.stroke();
-  const ax = 22, ay = 22, aw = W - 44, ah = H - 44;
+  const ax = 6, ay = 6, aw = W - 12, ah = H - 12;
   g.save(); archPath(g, ax, ay, aw, ah); g.clip();
   drawArt(g, artId, ax, ay, aw, ah, 0.35);
   const vg = g.createLinearGradient(0, ay, 0, ay + ah);
