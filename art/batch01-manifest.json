@@ -7,7 +7,7 @@
   "sword2": [
     "card",
     "30e83e986aa8d223cadedf30c35ca2ec7aea5546",
-    "2183b96479bffa1c50723592cee11072f05d6d51"
+    null
   ],
   "levy": [
     "card",
@@ -52,6 +52,61 @@
   "courier": [
     "card",
     "a91336a25abd1d631f825dad4aacf9bf38dea21f",
+    null
+  ],
+  "sword3": [
+    "card",
+    "48be6aa7a7a7189bd322ff1706b40baa5fd33c89",
+    null
+  ],
+  "sword4": [
+    "card",
+    "e18e4dcf9706313a62c00938360589010fd66439",
+    null
+  ],
+  "bow2": [
+    "card",
+    "3c21b8e1db493ce45060aec359f49727c91d1c46",
+    null
+  ],
+  "bow3": [
+    "card",
+    "81e9c7d4c40c5e616acf206692a2077443415d77",
+    null
+  ],
+  "bow4": [
+    "card",
+    "5bf615afaf048c5f866b4d30e65b7b566d444256",
+    null
+  ],
+  "spear2": [
+    "card",
+    "dc2f8c86afc25f28a1d2b4825920ba5529899821",
+    null
+  ],
+  "spear3": [
+    "card",
+    "2d29efd36cc3981b5d073088250a88ab2455e9ed",
+    null
+  ],
+  "spear4": [
+    "card",
+    "fefa41cf6387ee039b14c7afbb18711766e77260",
+    null
+  ],
+  "rider2": [
+    "card",
+    "ffeb738bfe9096ebdcdd6aa8415bdd3a8eb16fd8",
+    null
+  ],
+  "rider3": [
+    "card",
+    "fdedd71d06b0be6185d89cb3c9e480f1c2ce91ef",
+    null
+  ],
+  "rider4": [
+    "card",
+    "144152001cf36bfd48dac85f5e331788e0dfe6fb",
     null
   ]
 }

@@ -42,3 +42,15 @@
 .art-preview .slot.has-art strong{font-size:clamp(11px,1.5vw,17px)}
 .art-preview .has-art[aria-pressed=true],.art-preview .card.picked{box-shadow:0 0 0 2px #ffe3a1 inset,0 0 0 1px #e6c287}
 @media(max-height:450px) and (orientation:landscape){.start{flex-wrap:wrap;gap:5px}.release-note{line-height:1.2!important}.art-preview .card .stats{font-size:10px}.art-preview .card .cost{font-size:9px}}
+
+/* Keep complete portraits clear of card labels in wide landscape slots. */
+.art-preview .has-art { padding-right: 46%; }
+.art-preview .has-art .preview-art {
+  left: 56%;
+  width: 42%;
+  top: 3%;
+  height: 94%;
+  object-fit: contain;
+  object-position: center;
+}
+.art-preview .has-art::before { right: 44%; background: #10202755; }
