@@ -1,0 +1,57 @@
+{
+  "sword1": [
+    "card",
+    "53e05f80e6e70a63cacacb943cfa738d0763103f",
+    "b2e1a2c55545cfb86f459908aef60876397268c3"
+  ],
+  "sword2": [
+    "card",
+    "30e83e986aa8d223cadedf30c35ca2ec7aea5546",
+    "2183b96479bffa1c50723592cee11072f05d6d51"
+  ],
+  "levy": [
+    "card",
+    "9f55b26afbbf93c2ab858c20512f514f79fc7f0a",
+    "31247fa8d24196b66c58fc29ca70b7e1819090b6"
+  ],
+  "rider1": [
+    "card",
+    "03dfe22189b40095e355f08bdc570648c85a793e",
+    "7ad35fac80fcd975daf9b075388cb7e5dd4a72fc"
+  ],
+  "spear1": [
+    "card",
+    "211e8dfaf9ebd146616c6304644746a0f70df24b",
+    "cfc17b57afc12a02ed43584066de9dd87d3adba9"
+  ],
+  "first_ford": [
+    "battlefield",
+    "90c8175f5e84b22eab5d8829e8e0f69bb322fd7b",
+    "d8940b1c328acfe824cb4a7f2a185fb964d7c890"
+  ],
+  "bow1": [
+    "card",
+    "08436cfdeb8de0603843c432f8b7ff5252b7e06d",
+    null
+  ],
+  "watch": [
+    "card",
+    "a2156c02299f8117b46ed9f07195be98f8fdf051",
+    null
+  ],
+  "stitch": [
+    "card",
+    "a258fd92ff16f52d70d1b1495052550f14146adc",
+    null
+  ],
+  "screen": [
+    "card",
+    "7f0a4a052c5f3e7a1be2379f5565206ba7911721",
+    null
+  ],
+  "courier": [
+    "card",
+    "a91336a25abd1d631f825dad4aacf9bf38dea21f",
+    null
+  ]
+}

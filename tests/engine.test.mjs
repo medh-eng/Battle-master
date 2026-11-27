@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {unit,deck,newBattle,legal,apply,clash,resolve,next,aiAction,aiOrder} from '../src/engine.mjs';
+const P=(lane)=>({lane,kind:'press'}), H=(lane)=>({lane,kind:'hold'});
+test('PDF page 4 worked clash',()=>{let s=newBattle(4);s.players[0].hp=8;s.players[0].lanes=[[unit('sword2'),unit('bow1')],[null,null]];s.players[1].lanes=[[unit('spear1'),null],[unit('rider1'),null]];let p=clash(s,[P(0),P(1)]),h=clash(s,[H(1),P(1)]);assert.equal(p.fortDamage[0],3);assert.equal(h.fortDamage[0],1);assert.equal(p.hit[1][0],6);assert.equal(h.hit[1][0],4);resolve(s,[H(1),P(1)]);assert.equal(s.players[0].hp,7);assert.equal(s.players[0].lanes[0][0].hp,2);assert.equal(s.players[1].lanes[0][0],null)});
+test('twenty cards and deterministic deal',()=>{assert.equal(deck(['sword','bow']).length,20);assert.deepEqual(newBattle(44),newBattle(44));assert.equal(newBattle(44).players[0].supply,3)});
+test('illegal rear, insufficient supply and duplicate pass are rejected',()=>{let s=newBattle(2);assert.throws(()=>apply(s,0,{type:'deploy',h:0,lane:0,slot:1}));apply(s,0,{type:'pass'});assert.throws(()=>apply(s,0,{type:'pass'}))});
+test('simultaneous fort destruction draws',()=>{let s=newBattle(2);s.players.forEach(p=>p.hp=3);s.players[0].lanes[0][0]=unit('levy');s.players[1].lanes[1][0]=unit('levy');resolve(s,[P(0),P(1)]);assert.equal(s.result,'draw')});
+test('AI ignores pending order and unseen hand',()=>{let s=newBattle(2);let a=aiOrder(s);s.orders[0]=P(0);s.players[0].hand.reverse();assert.deepEqual(aiOrder(s),a)});
+test('100 seeded legal simulations terminate',()=>{for(let seed=1;seed<=100;seed++){let s=newBattle(seed);let count=0;while(s.phase!=='result'&&count++<200){if(s.phase==='muster'||s.phase==='choice'){let i=s.phase==='choice'?s.pending.side:s.turn;let a=i===1?aiAction(s):legal(s,i).find(x=>x.type==='deploy')||legal(s,i)[0];assert.ok(a);apply(s,i,a)}else if(s.phase==='order')resolve(s,[P(seed%2),aiOrder(s)]);else if(s.phase==='reveal')next(s);else assert.fail(s.phase)}assert.equal(s.phase,'result');assert.ok(s.round<=8)}});

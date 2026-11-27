@@ -1,0 +1,5 @@
+# Original assets handoff
+
+Art project owns final illustrations. Keep stable IDs and source PNGs under art/source. The static release builder generates WebP copies in dist/assets without changing the masters. art/batch01-manifest.json records the exact reviewed attachment Git hashes and six permitted provisional GitHub originals; the five rejected older images are excluded from the playable build. See art/BATCH-01-CORRECTED-REVIEW.md. Replace the same source filenames on main with reviewed versions, rerun checks and inspect the generated art-status.json. The Archer is conditionally accepted for gameplay despite a cropped lower bow tip. The default build shows eligible artwork; ?art=0 disables it. art-review.html remains a source-only gallery in the repository, not the release package.
+
+Audio: assets/audio/{title,camp,battle_base,battle_drum,battle_reed,reveal,evolve,train,victory,defeat,final}.ogg. Retain 48 kHz masters externally. Record source URL, creator, licence and retrieval date for Pixabay files; retain Gemini provenance and usage rights. No audio imported yet. Secret orders must stay silent until reveal.
