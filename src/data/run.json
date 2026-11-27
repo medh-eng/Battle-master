@@ -1,0 +1,508 @@
+{
+ "_about": "The roguelike march: economy, evolution and fusion recipes, fort upgrades, rewards, the seven-stop route and the rival commanders. Every number of the campaign lives here; src/run/*.ts only reads it.",
+ "starBonus": [
+  [
+   0,
+   0
+  ],
+  [
+   1,
+   1
+  ],
+  [
+   2,
+   2
+  ]
+ ],
+ "_starBonus": "[attack, health] added at 1, 2 and 3 stars. Stars survive evolution.",
+ "copies": 3,
+ "maxRegiments": 6,
+ "minRegiments": 3,
+ "maxTactics": 14,
+ "families": [
+  "sword",
+  "spear",
+  "rider",
+  "bow"
+ ],
+ "familyNames": {
+  "sword": "Sword",
+  "spear": "Spear",
+  "rider": "Cavalry",
+  "bow": "Bow",
+  "levy": "Levy"
+ },
+ "forms": {
+  "sword": [
+   "sword1",
+   "sword2",
+   "sword3",
+   "sword4"
+  ],
+  "spear": [
+   "spear1",
+   "spear2",
+   "spear3",
+   "spear4"
+  ],
+  "rider": [
+   "rider1",
+   "rider2",
+   "rider3",
+   "rider4"
+  ],
+  "bow": [
+   "bow1",
+   "bow2",
+   "bow3",
+   "bow4"
+  ],
+  "levy": [
+   "levy"
+  ]
+ },
+ "start": {
+  "pick": 2,
+  "levyRegiments": 2,
+  "tactics": [
+   "t_courier",
+   "t_courier",
+   "t_stitch",
+   "t_stitch",
+   "t_screen",
+   "t_screen",
+   "t_watch",
+   "t_watch"
+  ],
+  "gold": 0
+ },
+ "costs": {
+  "recruit": 3,
+  "train": [
+   2,
+   4
+  ],
+  "evolve": [
+   3,
+   5,
+   7
+  ],
+  "fuse": 4,
+  "evolveHybrid": 6,
+  "dismiss": 0
+ },
+ "_costs": "train[i]: from i+1 stars to i+2. evolve[i]: from form i+1 to i+2. fuse: two regiments (both form II or higher, different families) become one hybrid regiment at the lower of their stars.",
+ "fusion": {
+  "minForm": 2,
+  "recipes": {
+   "bow+rider": [
+    "h_horse_archer",
+    "h_royal_horse_archer"
+   ],
+   "spear+rider": [
+    "h_lancer",
+    "h_crown_lancer"
+   ],
+   "sword+rider": [
+    "h_knight",
+    "h_paladin"
+   ],
+   "sword+spear": [
+    "h_halberdier",
+    "h_bell_warden"
+   ],
+   "sword+bow": [
+    "h_ranger",
+    "h_shadow_ranger"
+   ],
+   "spear+bow": [
+    "h_pavise",
+    "h_arbalest"
+   ]
+  }
+ },
+ "fort": {
+  "baseHp": 20,
+  "repair": {
+   "cost": 2,
+   "hp": 6
+  },
+  "expand": {
+   "cost": 5,
+   "hp": 4,
+   "max": 2
+  },
+  "gates": [
+   {
+    "id": "timber",
+    "name": "Timber Gate",
+    "thorns": 0,
+    "cost": 0,
+    "hp": 0,
+    "text": "Plain oak doors."
+   },
+   {
+    "id": "iron",
+    "name": "Iron Gate",
+    "thorns": 1,
+    "cost": 3,
+    "hp": 2,
+    "text": "Strikes back 1 at every unit that hits your Fort. +2 max health."
+   },
+   {
+    "id": "bastion",
+    "name": "Bastion Gate",
+    "thorns": 2,
+    "cost": 5,
+    "hp": 2,
+    "text": "Strikes back 2. +2 max health."
+   },
+   {
+    "id": "royal",
+    "name": "Royal Gate",
+    "thorns": 3,
+    "cost": 7,
+    "hp": 2,
+    "text": "Strikes back 3. +2 max health."
+   }
+  ],
+  "slots": 2,
+  "build": {
+   "cost": 2,
+   "options": [
+    "f_palisade",
+    "f_watchtower"
+   ]
+  },
+  "upgrades": {
+   "f_palisade": [
+    {
+     "to": "f_stone_wall",
+     "cost": 3
+    },
+    {
+     "to": "f_thorn_rampart",
+     "cost": 3
+    }
+   ],
+   "f_stone_wall": [
+    {
+     "to": "f_bastion",
+     "cost": 5
+    }
+   ],
+   "f_watchtower": [
+    {
+     "to": "f_bow_tower",
+     "cost": 3
+    }
+   ],
+   "f_bow_tower": [
+    {
+     "to": "f_beacon_tower",
+     "cost": 5
+    }
+   ]
+  }
+ },
+ "income": {
+  "win": 6,
+  "elite": 3
+ },
+ "retries": 1,
+ "rewardChoices": 3,
+ "rewards": [
+  {
+   "id": "gold",
+   "label": "War Chest",
+   "text": "+4 gold.",
+   "gold": 4,
+   "value": 4,
+   "weight": 3
+  },
+  {
+   "id": "train",
+   "label": "Drill Sergeant",
+   "text": "A free star for your best regiment that can still train.",
+   "value": 3,
+   "weight": 3
+  },
+  {
+   "id": "repair",
+   "label": "Carpenters",
+   "text": "Repair 8 Fort health.",
+   "value": 3,
+   "weight": 2
+  },
+  {
+   "id": "recruit",
+   "label": "Volunteers",
+   "text": "A free new regiment of a family you lack (replaces a Levy if your army is full).",
+   "value": 3,
+   "weight": 2
+  },
+  {
+   "id": "card:t_volley",
+   "label": "Arrow Volley",
+   "text": "Add Arrow Volley to your deck.",
+   "value": 2,
+   "weight": 2
+  },
+  {
+   "id": "card:t_war_horn",
+   "label": "War Horn",
+   "text": "Add War Horn to your deck.",
+   "value": 2,
+   "weight": 2
+  },
+  {
+   "id": "card:t_fire_pots",
+   "label": "Fire Pots",
+   "text": "Add Fire Pots to your deck.",
+   "value": 2,
+   "weight": 2
+  },
+  {
+   "id": "card:t_caltrops",
+   "label": "Caltrops",
+   "text": "Add Caltrops to your deck.",
+   "value": 2,
+   "weight": 2
+  },
+  {
+   "id": "card:t_mend",
+   "label": "Mend the Walls",
+   "text": "Add Mend the Walls to your deck.",
+   "value": 2,
+   "weight": 2
+  },
+  {
+   "id": "card:t_bell",
+   "label": "Ring the Bell",
+   "text": "Add Ring the Bell to your deck.",
+   "value": 3,
+   "weight": 1
+  }
+ ],
+ "route": [
+  [
+   {
+    "id": "first_ford",
+    "name": "First Ford",
+    "rival": "nera",
+    "battlefield": "first_ford",
+    "weather": "sharad",
+    "kind": "duel"
+   }
+  ],
+  [
+   {
+    "id": "orchard",
+    "name": "Stone Orchard",
+    "rival": "sella",
+    "battlefield": "orchard",
+    "weather": "grishma",
+    "kind": "duel"
+   },
+   {
+    "id": "rivet_yard",
+    "name": "Rivet Yard",
+    "rival": "brann",
+    "battlefield": "rivet_yard",
+    "weather": "sharad",
+    "kind": "duel"
+   }
+  ],
+  [
+   {
+    "id": "river_toll",
+    "name": "River Toll",
+    "rival": "tamsin",
+    "battlefield": "river_toll",
+    "weather": "varsha",
+    "kind": "duel"
+   },
+   {
+    "id": "copper_crossing",
+    "name": "Copper Crossing",
+    "rival": "odo",
+    "battlefield": "copper_crossing",
+    "weather": "hemanta",
+    "kind": "duel"
+   }
+  ],
+  [
+   {
+    "id": "anvil_court",
+    "name": "The Anvil Court",
+    "rival": "anvil",
+    "battlefield": "anvil_court",
+    "weather": "sharad",
+    "kind": "elite"
+   }
+  ],
+  [
+   {
+    "id": "high_road",
+    "name": "The High Road",
+    "rival": "kestrel",
+    "battlefield": "high_road",
+    "weather": "sharad",
+    "kind": "duel"
+   },
+   {
+    "id": "amber_pass",
+    "name": "Amber Pass",
+    "rival": "amber",
+    "battlefield": "amber_pass",
+    "weather": "grishma",
+    "kind": "duel"
+   }
+  ],
+  [
+   {
+    "id": "crown_approach",
+    "name": "Crown Approach",
+    "rival": "silas",
+    "battlefield": "crown_approach",
+    "weather": "hemanta",
+    "kind": "elite"
+   }
+  ],
+  [
+   {
+    "id": "fifth_bell",
+    "name": "Fifth Bell",
+    "rival": "orra",
+    "battlefield": "fifth_bell",
+    "weather": "sharad",
+    "kind": "final"
+   }
+  ]
+ ],
+ "weatherText": {
+  "sharad": "Clear skies. No special rule.",
+  "varsha": "Rain and mud: no unit can advance and attack in the same turn.",
+  "grishma": "Heat haze: ranged units deal 1 less damage (never less than 1).",
+  "hemanta": "Harvest fair: both sides have 1 extra Supply every turn."
+ },
+ "rivals": {
+  "nera": {
+   "name": "Nera Vale",
+   "title": "River Courier",
+   "hero": "rider1",
+   "families": [
+    "rider",
+    "sword"
+   ],
+   "fort": 0.15,
+   "intro": "Nera carries letters across every ford in the Marches. She holds her riders back for the last muster, then floods the far bank."
+  },
+  "sella": {
+   "name": "Sella Yew",
+   "title": "Orchard Warden",
+   "hero": "bow2",
+   "families": [
+    "bow",
+    "spear"
+   ],
+   "fort": 0.3,
+   "hybrid": "spear+bow",
+   "intro": "Sella keeps a plain lead in front of her best archers. Break the lead and the bows are bare."
+  },
+  "brann": {
+   "name": "Brann Holt",
+   "title": "Master of the Rivet Yard",
+   "hero": "sword3",
+   "families": [
+    "sword",
+    "spear"
+   ],
+   "fort": 0.35,
+   "intro": "Brann's smiths rivet armour onto anyone who will stand still. His guards are slow, and very hard to kill."
+  },
+  "tamsin": {
+   "name": "Tamsin Reed",
+   "title": "Toll-Keeper",
+   "hero": "rider2",
+   "families": [
+    "rider",
+    "bow"
+   ],
+   "fort": 0.1,
+   "hybrid": "bow+rider",
+   "intro": "Tamsin charges a toll in silver or in blood. Her horse archers have never paid one."
+  },
+  "odo": {
+   "name": "Odo Marl",
+   "title": "Copper Captain",
+   "hero": "spear2",
+   "families": [
+    "spear",
+    "rider"
+   ],
+   "fort": 0.25,
+   "hybrid": "spear+rider",
+   "intro": "Odo pays his pikemen in copper and his lancers in gold. Both earn it."
+  },
+  "anvil": {
+   "name": "The Anvil Warden",
+   "title": "Keeper of the Court",
+   "hero": "sword4",
+   "families": [
+    "sword",
+    "bow"
+   ],
+   "fort": 0.55,
+   "intro": "Behind stone walls and an iron gate, the Warden waits for you to break yourself on them."
+  },
+  "kestrel": {
+   "name": "Kestrel",
+   "title": "Rider of the High Road",
+   "hero": "rider3",
+   "families": [
+    "rider",
+    "sword"
+   ],
+   "fort": 0.15,
+   "hybrid": "sword+rider",
+   "intro": "Kestrel has knights where others have farmhands. Every charge is meant to end the duel."
+  },
+  "amber": {
+   "name": "The Amber Regent",
+   "title": "Lord of the Pass",
+   "hero": "bow4",
+   "families": [
+    "bow",
+    "sword"
+   ],
+   "fort": 0.5,
+   "hybrid": "sword+bow",
+   "intro": "Towers line the Amber Pass. The Regent's rangers vanish into the smoke between them."
+  },
+  "silas": {
+   "name": "Silas Crane",
+   "title": "Crown Marshal",
+   "hero": "rider4",
+   "families": [
+    "sword",
+    "rider"
+   ],
+   "fort": 0.35,
+   "hybrid": "sword+rider",
+   "intro": "The Marshal was sent to stop you reaching the Bell. He brought the Crown's best."
+  },
+  "orra": {
+   "name": "Keeper Orra",
+   "title": "Keeper of the Fifth Bell",
+   "hero": "spear4",
+   "families": [
+    "spear",
+    "bow"
+   ],
+   "fort": 0.4,
+   "hybrid": "spear+bow",
+   "intro": "A dented copper bell hangs at Orra's belt. Her guard standard tells you what she fields. When she rings it, you will know what she intends."
+  }
+ }
+}

@@ -1,18 +1,61 @@
-# Battle Master — The Bell Marches
+# Battle Master: The Bell Marches
 
-A landscape card duel at First Ford. Pick two regiments, muster on Road and Ridge, and secretly commit one order. Both lanes resolve together.
+A roguelike card war in the tradition of KARDS, built on the engine of [YUDDH](https://github.com/medh-eng/Yuddh). Lead a wagon-fort through seven duels on the road to Fifth Bell. Between duels, evolve your regiments through four forms, train them to three stars, fuse two families into hybrids, and fortify your fort with walls, towers and a gate that strikes back. Every rival is built from exactly the gold you have earned, under the same rules. English, original world, original music.
 
-## Play First Ford
+**Play:** https://medh-eng.github.io/Battle-master/ (after Pages is switched on: Settings → Pages → Deploy from a branch → `gh-pages`).
 
-Run `npm start` from the repository and open <http://localhost:8080>. The game requires a modern browser and Python 3 for the local server. Game code and styles are served locally.
+## Where the project stands
 
-- **Learn one clash** starts at the position on page 4 of the design PDF. Try Press Road, then replay with Hold Ridge to see how two fort HP can turn on one decision.
-- **Enter First Ford** starts a full seeded duel. Tap a card and a highlighted slot to deploy, pass muster, preview an order and reveal. A broken fort or the eighth clash ends the duel.
+| Phase | What | Status |
+| --- | --- | --- |
+| 0 | Yuddh engine and renderer ported (TypeScript, PixiJS 8, GSAP, Vite, Vitest); Unity/ChatGPT prototype retired | Done (27 Nov 2026) |
+| 1 | Full march: muster, 7 stops with forks, camp (recruit, train ★, evolve I–IV, fuse hybrids, fort), rewards, second chance, equal rivals, save and resume, Codex, Quick duel | Done: playable, balance-simulated |
+| 2 | Art batch 03 (12 hybrids, 7 structures, 6 tactics, 9 battlefields, 10 commanders, fort), coached first battle | Next |
+| 3 | Daily march (seeded), more tactics and rival archetypes, Veteran AI tuning | |
+| 4 | Android (Capacitor, as in Yuddh), store listing | |
 
-Run `npm test` with Node 20 or later. The engine tests have no package dependencies.
+## For AI agents: read this instead of exploring the repo
 
-The project uses the original five-duel Bell Marches plan and a web-first implementation. Yuddh informed the separation of engine and presentation and the coached first decision. See the [phase roadmap](docs/ROADMAP.md) and [art and sound handoff](docs/ASSETS.md).
+Read `DESIGN.md` (what the game is), `TASKS.md` (what is next), `CLAUDE.md` (working rules and lessons). Then:
 
-## Playtest build
+| To change… | Edit |
+| --- | --- |
+| A card's stats, cost, text, keywords, family/form | `src/data/cards.json` (`yuddh` array; star variants `id@2`/`id@3` are generated in `src/engine/cards.ts`) |
+| Prices, star bonus, evolution lines, fusion recipes, fort gates/walls/towers, rewards, the route, rivals | `src/data/run.json` (every campaign number lives here) |
+| Battle rule constants: morale, charge classes, weather | `src/data/rules.json` |
+| March logic (purchases, fusion, rewards, rival budget, save) | `src/run/run.ts` (pure functions, no DOM) |
+| How a stop becomes a battle (decks, forts, structures, briefing) | `src/run/battle.ts` |
+| The screens between battles (muster, road, camp, reward, defeat, summary, Codex) | `src/game/scenes/march.ts` (HTML over the Pixi backdrop) |
+| The flow between screens | `src/main.ts` (`go()` switches on the run's `phase`) |
+| Battle rules (fort structures, gate thorns, healing tactic) | `src/engine/rules.ts` |
+| The battle screen | `src/game/scenes/battle.ts` (Yuddh's, with `Scenario.run` for the Continue button) |
+| Card faces, stars, placeholders | `src/game/cards/paint.ts` |
+| Music | `scripts/compose.py` renders the score; or drop `music_*.mp3` into `art/source/sfx/` |
+| Art | masters in `art/source/{cards,battlefields,sfx}/`, then `npm run assets` |
 
-First Ford is a playable preview, not the complete five-stop campaign. The browser saves an unfinished non-practice duel on this device; use Resume duel from the title screen. Local saves are not synced. For the optimised package, install Pillow (`python -m pip install pillow==11.3.0`), run `python scripts/build_release.py`, then `python -m http.server 8080 --directory dist`. The First Ford checks workflow also publishes the tested `first-ford-playable` artifact. Artwork with pending review hashes is displayed as a labelled text card. Six earlier GitHub images are provisional; exact reviewed files are accepted automatically by the builder. All source masters are preserved. See `dist/art-status.json` for the build's actual state. To publish a web URL, enable GitHub Actions as the Pages source in repository Settings → Pages and run Publish First Ford preview on main. No APK or full campaign is included.
+```
+src/data/       cards.json, run.json, rules.json, history.json (intro notice), index.ts
+src/engine/     Yuddh rules engine + Battle Master additions (fort keyword, thorns, healUnits, noDharma, star variants)
+src/run/        run.ts (the march), battle.ts (stop → Scenario)
+src/game/       Pixi renderer: stage, theme, audio, scenes (title, battle, march), cards (painter, views), ui
+src/assets/     card-art.json, battlefields.json, sfx.json (written by npm run assets), manifest.ts (loading, fallbacks)
+scripts/        convert-assets.mjs (masters → WebP/MP3), compose.py (original music)
+tests/          engine.test.ts, run.test.ts, balance.test.ts; e2e/march.cjs (scripted browser playtest)
+art/            prompt sheets, credits, masters in art/source/; archive-chatgpt-prototype/ (earlier review notes)
+```
+
+## Commands
+
+```bash
+npm install
+npm run dev          # play locally with live reload
+npm test             # engine, march and balance tests
+npm run build        # typecheck and build to dist/
+npm run assets       # convert art/source/* into public/assets/*
+python3 scripts/compose.py   # re-render the music (numpy, scipy, ffmpeg), then npm run assets
+npm run preview & node tests/e2e/march.cjs http://localhost:4173/ shots 1280 720   # scripted playtest with screenshots
+```
+
+## Credits
+
+Design and direction: Pon. Engine: YUDDH (Sarwam, Pon, Claude). Card paintings: Pon (ChatGPT image generation). Music: generated by `scripts/compose.py`. Sound effects: Pixabay. Code: Claude.

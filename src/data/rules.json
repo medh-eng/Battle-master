@@ -1,0 +1,61 @@
+{
+ "_about": "Rule constants and wording for the battle ruleset (Yuddh engine, Battle Master content). Edit values here; the engine reads them.",
+ "ranks": [
+  "",
+  "Veteran",
+  "Champion"
+ ],
+ "dharmaMax": 3,
+ "morale": {
+  "_about": "A unit routs when a blow leaves it at or below 1/lineDivisor of its maximum health (rounded up) and it was above that line before. Routed units flee to the Support Line and take no action in their owner's next turn.",
+  "lineDivisor": 3,
+  "steadfastKeywords": [
+   "raksha",
+   "fort"
+  ],
+  "steadfastClasses": [
+   "Standard-bearer"
+  ],
+  "steadfastRank": 2,
+  "rallyCards": [
+   "spear4",
+   "spear4@2",
+   "spear4@3"
+  ]
+ },
+ "kutaCards": [],
+ "chargeClasses": [
+  "Cavalry",
+  "Heavy Cavalry",
+  "Horse Archers"
+ ],
+ "ai": {
+  "_about": "The search AI (level 'search'): each turn it beam-searches its own action sequences on a copy of the board, with unseen cards re-dealt at random, then plays the opponent's reply and scores where that leaves it. Bigger numbers play better and think longer.",
+  "beam": 24,
+  "maxDepth": 12,
+  "finalists": 16,
+  "replies": 3
+ },
+ "seasons": {
+  "sharad": {
+   "name": "Clear",
+   "english": "Fair weather",
+   "rule": "Clear skies, firm ground. No special rule."
+  },
+  "varsha": {
+   "name": "Rain",
+   "english": "Mud",
+   "rule": "Mud: no unit can advance and attack in the same turn, not even cavalry."
+  },
+  "grishma": {
+   "name": "Heat",
+   "english": "Haze",
+   "rule": "Heat haze: ranged units deal 1 less damage (never less than 1)."
+  },
+  "hemanta": {
+   "name": "Harvest",
+   "english": "Fair",
+   "rule": "The harvest fair: both sides have 1 extra Supply every turn."
+  }
+ }
+}
