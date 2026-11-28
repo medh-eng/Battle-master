@@ -1,0 +1,82 @@
+{
+  "batch": "ui-01",
+  "date": "2026-11-28",
+  "generator": "ChatGPT built-in image generation",
+  "status": "proposed-for-owner-approval",
+  "raw_outputs_unmodified": true,
+  "runtime_integrated": false,
+  "assets": [
+    {
+      "file": "art/source/ui/ui_crest.png",
+      "role": "Title/loading crest",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "transparent_background": true,
+      "target_export_width": 1024,
+      "target_export_height": 1024,
+      "sha256": "68bb17a244002c1e42591eba49ccf2c5d604431408a86226faf0b400cb944884",
+      "bytes": 1841840
+    },
+    {
+      "file": "art/source/ui/ui_battle_start.png",
+      "role": "Battle-start sweep",
+      "width": 2172,
+      "height": 724,
+      "mode": "RGBA",
+      "transparent_background": true,
+      "target_export_width": 2400,
+      "target_export_height": 800,
+      "sha256": "5f24da95276b0ee41ad912d6d3e348745219aca8047cb4d3b6476f47abf3cb03",
+      "bytes": 2932963
+    },
+    {
+      "file": "art/source/ui/ui_victory.png",
+      "role": "Battle victory",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "transparent_background": false,
+      "target_export_width": 2560,
+      "target_export_height": 1440,
+      "sha256": "eddce7308628cd1747f97fe66c32b81e2932eb1ad2fc91b81f10887e27fa05f5",
+      "bytes": 3473562
+    },
+    {
+      "file": "art/source/ui/ui_defeat.png",
+      "role": "Battle defeat",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "transparent_background": false,
+      "target_export_width": 2560,
+      "target_export_height": 1440,
+      "sha256": "b280b85e6f6102d2ecec573d408b09bdf6fcfe556d8e5b3fa88e41b72f09beb1",
+      "bytes": 3177568
+    },
+    {
+      "file": "art/source/ui/ui_march_won.png",
+      "role": "Campaign victory at Fifth Bell",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "transparent_background": false,
+      "target_export_width": 2560,
+      "target_export_height": 1440,
+      "sha256": "2a57d2d67bfd1d47ddd805615bca5830b9986592ab5309c04aca4e032b56a49e",
+      "bytes": 3713618
+    },
+    {
+      "file": "art/source/ui/icon.png",
+      "role": "App/browser icon source",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGB",
+      "transparent_background": false,
+      "target_export_width": 1024,
+      "target_export_height": 1024,
+      "sha256": "f82716f30f8ee8205a9ccc99c0628239632d4241b0f6723a4d6aa969a9dd0cc4",
+      "bytes": 1663842
+    }
+  ]
+}

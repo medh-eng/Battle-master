@@ -32,7 +32,7 @@ Read `DESIGN.md` (what the game is), `TASKS.md` (what is next), `CLAUDE.md` (wor
 | The battle screen | `src/game/scenes/battle.ts` (Yuddh's, with `Scenario.run` for the Continue button) |
 | Card faces, stars, placeholders | `src/game/cards/paint.ts` |
 | Music | `scripts/compose.py` renders the score; or drop `music_*.mp3` into `art/source/sfx/` |
-| Art | masters in `art/source/{cards,battlefields,sfx}/`, then `npm run assets` |
+| Art | masters in `art/source/{cards,battlefields,sfx}/`, then `npm run assets`; proposed UI masters in `art/source/ui/` (conversion/integration pending; see `art/UI-ART-REVIEW.md`) |
 
 ```
 src/data/       cards.json, run.json, rules.json, history.json (intro notice), index.ts
