@@ -10,6 +10,11 @@
 - [x] Original music (scripts/compose.py) and bell call; Pixabay sound effects
 - [x] Tests: engine additions, march economy, rivals, save; equal-budget balance sweep; scripted browser playtest at 1280×720 and 844×390
 
+## UI source delivery (28 Nov 2026)
+- [x] Generate and name six raw UI PNGs from the supplied art brief; add prompts, manifest and review gallery
+- [ ] Pon: approve the six UI paintings (`art/UI-ART-REVIEW.md`)
+- [ ] After approval: prepare production-size exports, add conversion/loading and UI animations, and install icon derivatives
+
 ## Next
 - [ ] Pon: play two or three marches on a phone; note anything confusing or any card that feels useless or too strong
 - [x] Art batch 03 painted (PR #5) and wired: commander portraits on rival Forts, the road and camp (`r_<rival>`); `fort_wagon` on your Fort; camp backdrop is the next battlefield

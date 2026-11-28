@@ -14,6 +14,8 @@
 - [x] Balance sweep (first seat ~49%, commanders 43–60%)
 
 ## Phase 2: Look and teach
+- [x] Six UI source paintings prepared with review gallery and generation prompts (28 Nov 2026)
+- [ ] Owner approval and runtime integration of crest, battle banner, end scenes and app icon
 - [x] Art batch 03: hybrids, structures, tactics, battlefields, commanders, fort (PR #5, wired in Nov 2026)
 - [ ] Coached first battle
 - [ ] Evolution and fusion animations at camp
