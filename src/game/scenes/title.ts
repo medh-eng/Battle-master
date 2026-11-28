@@ -6,7 +6,7 @@ import { FONT_DEVA, FONT_SERIF, INK, FONT_TITLE } from '../theme';
 import { view } from '../view';
 import { makeButton } from '../ui/button';
 import { audio } from '../audio';
-import { battlefieldUrl } from '../../assets/manifest';
+import { battlefieldUrl, loadUi, uiUrl } from '../../assets/manifest';
 import type { Scene, Stage } from '../stage';
 
 /** a soft dark pool, laid behind lettering so it reads against the bright sky */
@@ -22,14 +22,14 @@ function shadePool(): Texture {
   return shadeTex;
 }
 
-import { howToPlayPanel, knowCardPanel, knowCardSeen, markKnowCard, noticePanel } from '../ui/historyPanel';
+import { knowCardPanel, knowCardSeen, markKnowCard, noticePanel } from '../ui/historyPanel';
 import { destroyTree } from '../stage';
 
 const NOTICE_KEY = 'bm.notice.v1';
 const noticeSeen = (): boolean => { try { return localStorage.getItem(NOTICE_KEY) === '1'; } catch { return true; } };
 const markNotice = (): void => { try { localStorage.setItem(NOTICE_KEY, '1'); } catch { /* private mode */ } };
 
-export interface TitleGo { resume: (() => void) | null; march(): void; quick(): void; codex(): void; record: string }
+export interface TitleGo { resume: (() => void) | null; march(): void; quick(): void; codex(): void; learn(): void; record: string }
 export function titleScene(stage: Stage, go: TitleGo): Scene {
   const s: Scene = new Container();
   const painting = Texture.from(battlefieldUrl('title'));
@@ -38,6 +38,9 @@ export function titleScene(stage: Stage, go: TitleGo): Scene {
   const pool2 = new Sprite(shadePool()); pool2.anchor.set(0.5);
   s.addChild(art, pool, pool2);
 
+  // the bell-and-banners crest above the name (wide screens only: a phone's short height has no room)
+  const crest = new Sprite(Texture.from(uiUrl('crest'))); crest.anchor.set(0.5);
+  s.addChild(crest);
   const deva = new Text({ text: 'THE BELL MARCHES', style: { fontFamily: FONT_DEVA, fontSize: 64, fill: INK.gold, stroke: { color: 0x1a0d05, width: 4 } } });
   deva.anchor.set(0.5);
   const title = new Text({ text: 'BATTLE MASTER', style: { fontFamily: FONT_TITLE, fontSize: 150, fontWeight: '700', letterSpacing: 16, fill: INK.goldPale, stroke: { color: 0x1a0d05, width: 6 }, dropShadow: { color: 0x000000, blur: 18, distance: 0, alpha: 0.9 } } });
@@ -65,11 +68,6 @@ export function titleScene(stage: Stage, go: TitleGo): Scene {
     const p = knowCardPanel(() => { markKnowCard(); destroyTree(p); noticeUp = null; });
     noticeUp = p; s.addChild(p);
   }
-  function openHowTo(): void {
-    if (noticeUp) return;
-    const p = howToPlayPanel(() => { destroyTree(p); noticeUp = null; });
-    noticeUp = p; s.addChild(p);
-  }
 
   // dust motes drifting in the sunlight
   const motes = new Container();
@@ -91,7 +89,9 @@ export function titleScene(stage: Stage, go: TitleGo): Scene {
     art.position.set(W / 2, H / 2); art.scale.set(cover);
     drift?.kill();
     drift = gsap.fromTo(art.scale, { x: cover, y: cover }, { x: cover * 1.07, y: cover * 1.07, duration: 40, ease: 'sine.inOut', yoyo: true, repeat: -1 });
-    const ty = ph ? 186 : 280;
+    const ty = ph ? 186 : 320;
+    crest.visible = !ph;
+    if (!ph) { const ct = crest.texture; const fit = () => crest.scale.set(158 / ct.height); fit(); ct.source.once('update', fit); crest.position.set(W / 2, 96); }
     deva.style.fontSize = ph ? 34 : 38; deva.style.letterSpacing = 14; deva.position.set(W / 2, ty - (ph ? 100 : 120));
     title.style.fontSize = ph ? 132 : 150; title.position.set(W / 2 + 8, ty);
     while (title.width > W - 80 && +title.style.fontSize > 70) title.style.fontSize = +title.style.fontSize - 4;
@@ -104,7 +104,7 @@ export function titleScene(stage: Stage, go: TitleGo): Scene {
     buttons.removeChildren().forEach(c => c.destroy({ children: true }));
     const list: [string, () => void, boolean][] = [];
     if (go.resume) list.push(['Continue march', go.resume, true]);
-    list.push(['New march', go.march, !go.resume], ['Quick duel', go.quick, false], ['Codex', go.codex, false], ['How to play', () => { chosen = false; openHowTo(); }, false]);
+    list.push(['New march', go.march, !go.resume], ['Quick duel', go.quick, false], ['Codex', go.codex, false], ['How to play', go.learn, false]);
     list.forEach(([label, fn, primary], i) => {
       // one choice per visit: a second tap while a battle's paintings load would start a second scene
       const b = makeButton(label, () => { if (chosen) return; chosen = true; fn(); }, { primary, w: ph ? 380 : 400, ui: ph ? 1.1 : 1 });
@@ -132,11 +132,13 @@ export function titleScene(stage: Stage, go: TitleGo): Scene {
   };
   s.relayout = layout;
   s.enter = () => {
+    void loadUi('crest');
     stage.setBackdrop(painting, 0.35);
     audio.playMusic('music_title');
     if (!noticeSeen()) openNotice(); else if (!knowCardSeen()) openKnowCard();
     Ticker.shared.add(tick);
     gsap.from([deva, title, sub], { y: '+=30', alpha: 0, duration: 1.2, stagger: 0.15, ease: 'power3.out' });
+    gsap.from(crest, { alpha: 0, duration: 1.4 });
     gsap.from(buttons.children, { alpha: 0, duration: 0.8, delay: 0.7, stagger: 0.12 });
   };
   s.leave = () => { Ticker.shared.remove(tick); drift?.kill(); };

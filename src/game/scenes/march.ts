@@ -95,7 +95,7 @@ export function domScene(stage: Stage, backdrop: string, music: string, render: 
 }
 
 /** tiny element builder */
-function h(tag: string, attrs: Record<string, unknown> = {}, ...kids: (Node | string | null | false)[]): HTMLElement {
+export function h(tag: string, attrs: Record<string, unknown> = {}, ...kids: (Node | string | null | false)[]): HTMLElement {
   const el = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs)) {
     if (k === 'onclick') el.addEventListener('click', e => { e.stopPropagation(); audio.play('click'); (v as () => void)(); });
@@ -108,7 +108,7 @@ function h(tag: string, attrs: Record<string, unknown> = {}, ...kids: (Node | st
   return el;
 }
 /** a card face; a tap opens it large */
-function face(id: string, cls = 'face'): HTMLElement {
+export function face(id: string, cls = 'face'): HTMLElement {
   const img = h('img', { class: cls, src: cardFaceUrl(id), alt: CARDS[id]?.name ?? id, draggable: 'false' });
   img.addEventListener('click', () => {
     const z = h('div', { class: 'zoom' }, h('img', { src: cardFaceUrl(id) }));
@@ -130,7 +130,7 @@ function portrait(rival: string, hero: string): HTMLElement {
   });
   return img;
 }
-const btn = (label: string, fn: () => void, opts: { alt?: boolean; big?: boolean; off?: boolean } = {}) =>
+export const btn = (label: string, fn: () => void, opts: { alt?: boolean; big?: boolean; off?: boolean } = {}) =>
   h('button', { class: [opts.alt ? 'alt' : '', opts.big ? 'big' : ''].join(' '), onclick: fn, disabled: !!opts.off }, label);
 const goldTxt = (n: number) => `${n} gold`;
 const ROMAN = ['', 'I', 'II', 'III', 'IV'];
@@ -153,7 +153,7 @@ function topBar(s: RunState, extra: (Node | string)[] = []): HTMLElement {
 }
 
 /* ---------------- 1. choosing the first two regiments ---------------- */
-export function musterScreen(stage: Stage, begin: (f: Family[]) => void, back: () => void): Scene {
+export function musterScreen(stage: Stage, begin: (f: Family[]) => void, back: () => void, help?: () => void): Scene {
   return domScene(stage, 'first_ford', 'music_camp', root => {
     const chosen = new Set<Family>();
     const draw = (): void => {
@@ -171,7 +171,8 @@ export function musterScreen(stage: Stage, begin: (f: Family[]) => void, back: (
           })),
           h('div', { class: 'row' },
             btn('Begin the march', () => begin([...chosen]), { big: true, off: chosen.size !== DATA.start.pick }),
-            btn('Back', back, { alt: true }))));
+            btn('Back', back, { alt: true }),
+            help ? btn('How to play', help, { alt: true }) : null)));
     };
     const toggle = (f: Family): void => {
       if (chosen.has(f)) chosen.delete(f); else if (chosen.size < DATA.start.pick) chosen.add(f);
@@ -200,14 +201,14 @@ export function routeScreen(stage: Stage, s: RunState, done: () => void, quit: (
             h('div', {}, h('span', { class: 'tag' }, n.kind === 'final' ? 'FINAL' : n.kind === 'elite' ? 'ELITE +3 gold' : 'DUEL'), h('b', {}, `${r.name}`), `, ${r.title}`),
             h('div', { class: 'small', style: 'margin:.4em 0' }, WEATHER[n.weather]),
             h('div', { class: 'small' }, `Army: ${armyLine(rv)}`),
-            h('div', { style: 'margin-top:.6em' }, btn('Take this road', () => { chooseRoad(s, n.id); done(); }))));
+            h('div', { style: 'margin-top:.6em' }, btn('Take this road', () => { audio.play('mapPick'); chooseRoad(s, n.id); done(); }))));
       })),
       h('div', { class: 'row' }, btn('Title screen', quit, { alt: true })));
   });
 }
 
 /* ---------------- 3. camp ---------------- */
-export function campScreen(stage: Stage, s: RunState, save: () => void, march: () => void, quit: () => void): Scene {
+export function campScreen(stage: Stage, s: RunState, save: () => void, march: () => void, quit: () => void, help?: () => void): Scene {
   return domScene(stage, currentNode(s)?.battlefield ?? 'first_ford', 'music_camp', root => {
     let msg: Result | null = null;
     let fuseA: number | null = null;
@@ -296,6 +297,7 @@ export function campScreen(stage: Stage, s: RunState, save: () => void, march: (
           btn('Army', () => { tab = 'army'; draw(); }, { alt: tab !== 'army' }),
           btn('Fort', () => { tab = 'fort'; draw(); }, { alt: tab !== 'fort' }),
           btn('Deck', () => { tab = 'deck'; draw(); }, { alt: tab !== 'deck' }),
+          help ? btn('Field manual ?', help, { alt: true }) : null,
           btn('Title screen', quit, { alt: true })),
         tab === 'army' ? armyTab() : tab === 'fort' ? fortTab() : deckTab());
     };
@@ -322,7 +324,7 @@ export function rewardScreen(stage: Stage, s: RunState, done: () => void): Scene
 
 /* ---------------- 5. defeat, and the end of a march ---------------- */
 export function lostScreen(stage: Stage, s: RunState, again: () => void, end: () => void): Scene {
-  return domScene(stage, 'first_ford', 'music_defeat', root => {
+  return domScene(stage, 'ui_defeat', 'music_defeat', root => {
     const n = currentNode(s)!;
     root.replaceChildren(h('div', { class: 'center' },
       h('h1', {}, 'Defeat'),
@@ -335,7 +337,7 @@ export function lostScreen(stage: Stage, s: RunState, again: () => void, end: ()
 
 export function summaryScreen(stage: Stage, s: RunState, again: () => void, title: () => void): Scene {
   const won = s.phase === 'won';
-  return domScene(stage, 'first_ford', won ? 'music_victory' : 'music_defeat', root => {
+  return domScene(stage, won ? 'ui_march_won' : 'ui_defeat', won ? 'music_march_won' : 'music_defeat', root => {
     const m = loadMeta();
     root.replaceChildren(
       h('div', { class: 'center' },

@@ -1,6 +1,6 @@
 # Sound and music
 
-Music is rendered by `python3 scripts/compose.py` (then `npm run assets`). To replace a piece with a better recording, drop an MP3 with the same name into `art/source/sfx/` (it overrides the generated one) and record its source in CREDITS.md.
+Music and sounds are recordings in `art/source/sfx/` (Gemini music, Pixabay effects; see CREDITS.md). Run `npm run assets` to cut, level and convert them for the game. One-shot pieces are cut from longer recordings (`MUSIC_CUT` in `scripts/convert-assets.mjs`); loops keep their full length. `scripts/compose.py` is the old synthesised score and no longer overwrites existing files.
 
 | File | Plays | Brief |
 | --- | --- | --- |
@@ -12,3 +12,11 @@ Music is rendered by `python3 scripts/compose.py` (then `npm run assets`). To re
 | `music_victory` | win | the motif resolves to D on the bell |
 | `music_defeat` | loss | the reed fades on the third note |
 | `conch` | battle start | two strokes of a great bell (name kept for the engine) |
+| `music_fifth_bell` | the final duel at Fifth Bell | 104 BPM; fierce reel, great bell on the first beat of every four bars |
+| `music_march_won` | the whole march won | one-shot, cut to about a minute |
+| `turnBell` | your turn starts | one clean brass ding |
+| `evolve`, `starUp`, `fuse`, `build` | camp: evolve, train, fuse, build/repair (also Palisade built in a duel) | anvil, sparkle, hot iron, hammer |
+| `wallBreak`, `gateStrike` | a wall or tower falls; the gate strikes back | timber collapse; iron stab |
+| `greatBell`, `horn`, `volley`, `firePots`, `caltrops` | the tactics Ring the Bell, War Horn, Arrow Volley, Fire Pots, Caltrops | one per tactic (Mend the Walls and Field Stitcher use `build`) |
+| `crossbow`, `neigh`, `rout` | Pavise and Arbalest shoot; mounted units arrive; a unit breaks | |
+| `mapPick` | choosing a road on the map | paper rustle |

@@ -15,7 +15,9 @@
 
 ## Phase 2: Look and teach
 - [x] Six UI source paintings prepared with review gallery and generation prompts (28 Nov 2026)
-- [ ] Owner approval and runtime integration of crest, battle banner, end scenes and app icon
+- [x] Crest, battle banner, end scenes and app icon approved and integrated
+- [x] Gemini music (9 pieces) and Pixabay effects (21) integrated
+- [x] Field Manual: interactive intro lessons
 - [x] Art batch 03: hybrids, structures, tactics, battlefields, commanders, fort (PR #5, wired in Nov 2026)
 - [ ] Coached first battle
 - [ ] Evolution and fusion animations at camp

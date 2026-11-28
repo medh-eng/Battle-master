@@ -62,6 +62,8 @@ export function runScenario(s: RunState, finish: (won: boolean, st: GameState) =
     winText: turn => `${r.name} lowers the colours in round ${turn}. The road ahead is open.`,
     loseText: `${r.name} holds the road. ${s.retries > 0 ? 'Your march can regroup once.' : 'The march ends here.'}`,
     goLabel: 'To battle',
+    // the last duel has its own score; every other stop uses the standard battle pieces
+    music: node.kind === 'final' ? { calm: 'music_fifth_bell', intense: 'music_fifth_bell' } : undefined,
     playerDeck: deckOf(s),
     enemyDeck: deckOf(rv),
     extraArt: ['sword1', 'spear1', 'rider1', 'bow1', ...structuresOf(s), ...structuresOf(rv)],
