@@ -68,8 +68,13 @@ Design pillars:
 
 - Original world, the Bell Marches: woodcut paintings on dyed paper, indigo cloth, copper, warm ivory (Pon's approved batch 02). Every name is invented. English only.
 - All 57 paintings delivered (families, Levy, hybrids, structures, tactics, the wagon-fort, 10 commanders) and all 10 battlefields. Cards show the painting full width with no arch. Commander portraits (`r_<rival>`) appear on the rival Fort plaque, the road and the camp; the camp backdrop is the next battlefield. Any future card without art still falls back to a placeholder (hybrids: parents split on a diagonal; others: a woodcut emblem).
-- Music: original, rendered by `scripts/compose.py` from the bell motif D4–F4–E4–A4 (a question that resolves to D only at the final victory): title, camp, briefing, battle calm, battle intense, victory, defeat, and the battle-start bell. Pon may replace any piece by dropping a file of the same name into `art/source/sfx/`.
-- Sound effects: Pixabay set from Yuddh (no Indian conch: the bell call replaces it).
+- Music: nine acoustic folk pieces made by Pon with Gemini (Lyria 3 Pro) around the bell motif D–F–E–A (a question that resolves to D only on victory): title, camp, briefing, battle calm, battle intense, Fifth Bell (the final duel), victory, defeat, march won. Pon may replace any piece by dropping a file of the same name into `art/source/sfx/`.
+- Sound effects: Pixabay (Yuddh's set plus 16 Bell Marches sounds: turn bell, evolve, star, fuse, build, wall break, gate strike, great bell, horn, volley, fire pots, caltrops, crossbow, neigh, rout, map). The battle-start bell is the recorded `conch` (two strokes of a great bell).
+- Interface art: crest (title), crossed banners (TO BATTLE), victory, defeat and march-won paintings, app icon (`art/source/ui/`, converted to `public/assets/ui/`).
+
+## The Field Manual (teaching)
+
+Twelve short, hands-on lessons in `src/game/scenes/tutorial.ts`, built from the real card data and prices: welcome and the loop; reading a card (four numbers, with pins); Supply (a playable hand); a duel in five steps; earning gold (6 per win, 9 at an elite, six wins pay 42); spending gold (a pretend camp with 12 gold); training stars; evolving (all four families); fusing (the six recipes); defending the Fort (HP carry-over, repair, widening, gates, walls, towers); in the field (drag, Guard, Swift, Ranged, tactics, morale, weather, deck-out); ready to march. It is shown once, before the first new march (`Meta.tutorial`), and opens from the title (How to play), the muster and the camp (Field manual ?).
 
 ## Decisions taken over the two ChatGPT plans (26 Nov)
 

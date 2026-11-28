@@ -16,17 +16,21 @@ const BASE = import.meta.env.BASE_URL;
 const RECORDED = new Set(recordedList as string[]);
 
 export type Sfx = 'conch' | 'drum' | 'clash' | 'bow' | 'arrowHit' | 'deploy' | 'cardDraw' | 'cardPlay'
-  | 'march' | 'fortHit' | 'death' | 'coin' | 'yantra' | 'fire' | 'victory' | 'defeat' | 'click' | 'elephant' | 'gallop' | 'sandGust';
+  | 'march' | 'fortHit' | 'death' | 'coin' | 'yantra' | 'fire' | 'victory' | 'defeat' | 'click' | 'elephant' | 'gallop' | 'sandGust'
+  // the Bell Marches set (28 Nov 2026)
+  | 'turnBell' | 'evolve' | 'starUp' | 'fuse' | 'build' | 'wallBreak' | 'gateStrike' | 'greatBell' | 'horn' | 'volley'
+  | 'firePots' | 'caltrops' | 'crossbow' | 'neigh' | 'rout' | 'mapPick';
 /** the six core pieces, or a campaign's own piece named music_<something> (see art/SOUND-LIST.md) */
 export type Track = 'music_title' | 'music_briefing' | 'music_battle_calm' | 'music_battle_intense' | 'music_victory' | 'music_defeat' | `music_${string}`;
 
 const SFX_NAMES: Sfx[] = ['conch', 'drum', 'clash', 'bow', 'arrowHit', 'deploy', 'cardDraw', 'cardPlay', 'march', 'fortHit',
-  'death', 'coin', 'yantra', 'fire', 'victory', 'defeat', 'click', 'elephant', 'gallop', 'sandGust'];
+  'death', 'coin', 'yantra', 'fire', 'victory', 'defeat', 'click', 'elephant', 'gallop', 'sandGust',
+  'turnBell', 'evolve', 'starUp', 'fuse', 'build', 'wallBreak', 'gateStrike', 'greatBell', 'horn', 'volley', 'firePots', 'caltrops', 'crossbow', 'neigh', 'rout', 'mapPick'];
 /** level of each recording relative to the others (1 = as converted) */
-const LEVEL: Partial<Record<Sfx, number>> = { conch: 0.85, elephant: 0.8, fortHit: 0.9, drum: 1.1 };
+const LEVEL: Partial<Record<Sfx, number>> = { conch: 0.85, elephant: 0.8, fortHit: 0.9, drum: 1.1, greatBell: 0.9, turnBell: 0.8, mapPick: 0.8, gateStrike: 1.1 };
 /** these vary their pitch a little each time, so repeated blows do not sound copied */
-const VARY = new Set<Sfx>(['clash', 'bow', 'arrowHit', 'deploy', 'cardDraw', 'cardPlay', 'death', 'march', 'click', 'gallop']);
-const ONE_SHOT = new Set<Track>(['music_victory', 'music_defeat']);
+const VARY = new Set<Sfx>(['clash', 'bow', 'arrowHit', 'deploy', 'cardDraw', 'cardPlay', 'death', 'march', 'click', 'gallop', 'crossbow', 'rout', 'gateStrike', 'caltrops', 'mapPick', 'build']);
+const ONE_SHOT = new Set<Track>(['music_victory', 'music_defeat', 'music_march_won']);
 const XFADE = 4;  // seconds of cross-fade when a looping piece wraps round
 
 interface Voice { el: HTMLAudioElement; g: GainNode }
@@ -282,7 +286,24 @@ const SYNTH: Record<Sfx, Recipe> = {
     o.frequency.setValueAtTime(380, t0); o.frequency.linearRampToValueAtTime(720, t0 + 0.25); o.frequency.linearRampToValueAtTime(520, t0 + 0.9);
     const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 1100; bp.Q.value = 2.5;
     o.connect(bp); bp.connect(env(ctx, out, 0.08, 0.3, 0.9, t0)); o.start(t0); o.stop(t0 + 1.1);
-  }
+  },
+  // stand-ins used only until the recordings load
+  turnBell: (ctx, out) => { [880, 1760, 2637].forEach((f, i) => tone(ctx, out, 'sine', f, f, 0.002, 0.7 / (i + 1), 0.35 / (i + 1))); },
+  evolve: (ctx, out) => { [523, 784, 1046].forEach((f, i) => tone(ctx, out, 'triangle', f, f, 0.01, 0.4, 0.5, i * 0.08)); },
+  starUp: (ctx, out) => { [784, 988, 1175, 1568].forEach((f, i) => tone(ctx, out, 'sine', f, f, 0.005, 0.2, 0.5, i * 0.07)); },
+  fuse: (ctx, out) => { burst(ctx, out, 'lowpass', 1500, 0.6, 0.2, 0.8, 1.2); tone(ctx, out, 'sawtooth', 110, 330, 0.1, 0.5, 0.5); },
+  build: (ctx, out) => { for (let i = 0; i < 3; i++) burst(ctx, out, 'bandpass', 1200, 2, 0.002, 0.09, 0.4, i * 0.18); },
+  wallBreak: (ctx, out) => { burst(ctx, out, 'lowpass', 900, 0.7, 0.01, 0.9, 1.0); tone(ctx, out, 'sine', 80, 35, 0.005, 0.7, 0.6); },
+  gateStrike: (ctx, out) => { burst(ctx, out, 'highpass', 2200, 0.8, 0.002, 0.2, 0.4); tone(ctx, out, 'triangle', 1400, 900, 0.002, 0.15, 0.4); },
+  greatBell: (ctx, out) => { [196, 392, 590].forEach((f, i) => tone(ctx, out, 'sine', f, f, 0.003, 2.5 / (i + 1), 0.5 / (i + 1))); },
+  horn: (ctx, out) => { SYNTH.conch(ctx, out); },
+  volley: (ctx, out) => { burst(ctx, out, 'bandpass', 2400, 1.2, 0.3, 0.6, 0.4); },
+  firePots: (ctx, out) => { burst(ctx, out, 'highpass', 3000, 0.7, 0.003, 0.2, 0.4); SYNTH.fire(ctx, out); },
+  caltrops: (ctx, out) => { for (let i = 0; i < 6; i++) burst(ctx, out, 'highpass', 3500, 0.8, 0.002, 0.05, 0.3, i * 0.06 + Math.random() * 0.03); },
+  crossbow: (ctx, out) => { tone(ctx, out, 'square', 220, 90, 0.002, 0.08, 0.3); burst(ctx, out, 'bandpass', 1600, 2, 0.01, 0.15, 0.3, 0.04); },
+  neigh: (ctx, out) => { tone(ctx, out, 'sawtooth', 500, 900, 0.05, 0.5, 0.25); tone(ctx, out, 'sawtooth', 900, 450, 0.05, 0.5, 0.2, 0.3); },
+  rout: (ctx, out) => { burst(ctx, out, 'highpass', 2500, 0.6, 0.01, 0.5, 0.35); },
+  mapPick: (ctx, out) => burst(ctx, out, 'bandpass', 2500, 1, 0.04, 0.2, 0.15)
 };
 
 export const audio = new AudioEngine();

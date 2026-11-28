@@ -27,6 +27,7 @@ Read `DESIGN.md` (what the game is), `TASKS.md` (what is next), `CLAUDE.md` (wor
 | March logic (purchases, fusion, rewards, rival budget, save) | `src/run/run.ts` (pure functions, no DOM) |
 | How a stop becomes a battle (decks, forts, structures, briefing) | `src/run/battle.ts` |
 | The screens between battles (muster, road, camp, reward, defeat, summary, Codex) | `src/game/scenes/march.ts` (HTML over the Pixi backdrop) |
+| The Field Manual (illustrated lessons on cards, gold, upgrades and defence) | `src/game/scenes/tutorial.ts` |
 | The flow between screens | `src/main.ts` (`go()` switches on the run's `phase`) |
 | Battle rules (fort structures, gate thorns, healing tactic) | `src/engine/rules.ts` |
 | The battle screen | `src/game/scenes/battle.ts` (Yuddh's, with `Scenario.run` for the Continue button) |

@@ -23,7 +23,9 @@ const root = new URL('..', import.meta.url).pathname;
 /* ---------------- pictures ---------------- */
 const jobs = [
   { from: 'art/source/cards', to: 'public/assets/cards', w: 720, q: 84 },
-  { from: 'art/source/battlefields', to: 'public/assets/battlefields', w: 2560, q: 82 }
+  { from: 'art/source/battlefields', to: 'public/assets/battlefields', w: 2560, q: 82 },
+  // 28 Nov 2026: crest and banner keep their transparency (WebP alpha); the three end scenes are full pictures
+  { from: 'art/source/ui', to: 'public/assets/ui', w: 1600, q: 84 }
 ];
 const cards = [];
 for (const j of jobs) {
@@ -48,8 +50,15 @@ const SHAPE = {
   fortHit: [1.3, 0.5, false, -17], elephant: [1.7, 0.6, false, -19], cardDraw: [0.25, 0.08, true, -20],
   cardPlay: [0.35, 0.1, true, -18], march: [0.9, 0.25, false, -18], death: [0.9, 0.3, false, -18],
   coin: [0.6, 0.25, false, -19], yantra: [0.9, 0.3, false, -18], fire: [1.3, 0.5, false, -18],
-  click: [0.12, 0.04, true, -22], gallop: [1.3, 0.45, false, -18], sandGust: [1.6, 0.7, false, -20], victory: [4.5, 1.2, false, -18], defeat: [3.5, 1.2, false, -18]
+  click: [0.12, 0.04, true, -22], gallop: [1.3, 0.45, false, -18], sandGust: [1.6, 0.7, false, -20], victory: [4.5, 1.2, false, -18], defeat: [3.5, 1.2, false, -18],
+  // 28 Nov 2026 set (Pixabay): these sources are long, so each is cut to its first clean sound
+  turnBell: [1.0, 0.4, false, -19], evolve: [1.6, 0.6, false, -17], starUp: [1.8, 0.7, false, -19], fuse: [2.2, 0.8, false, -18],
+  build: [2.0, 0.5, false, -17], wallBreak: [2.0, 0.8, false, -16], gateStrike: [0.7, 0.25, true, -16], greatBell: [4.0, 2.2, false, -19],
+  horn: [2.4, 0.9, false, -18], volley: [2.0, 0.8, false, -18], firePots: [1.8, 0.7, false, -17], caltrops: [1.4, 0.5, false, -19],
+  crossbow: [0.8, 0.3, true, -17], neigh: [1.4, 0.5, false, -18], rout: [1.4, 0.5, false, -19], mapPick: [0.55, 0.2, true, -21]
 };
+/** one-shot music cut from longer recordings: [start after leading silence s, length s, fade-out s]. Looping pieces keep their full length. */
+const MUSIC_CUT = { music_victory: [0, 28, 3.5], music_defeat: [0, 24, 4], music_march_won: [0, 62, 5] };
 const SR = 22050, WIN = Math.round(SR * 0.01);
 
 /** decide where a sound effect starts and ends, and how much to turn it up or down */
@@ -97,7 +106,9 @@ if (existsSync(sfxSrc)) {
     const src = join(sfxSrc, f), out = join(sfxDst, `${id}.mp3`);
     if (music) {
       const trim = 'silenceremove=start_periods=1:start_threshold=-55dB';
-      execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', src, '-af', `${trim},areverse,${trim},areverse`, '-ac', '2', '-ar', '44100', '-b:a', '128k', out]);
+      const cut = MUSIC_CUT[id];
+      const tail = cut ? `,atrim=${cut[0]}:${cut[0] + cut[1]},asetpts=PTS-STARTPTS,afade=t=out:st=${cut[1] - cut[2]}:d=${cut[2]}` : `,areverse,${trim},areverse`;
+      execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', src, '-af', `${trim}${tail}`, '-ac', '2', '-ar', '44100', '-b:a', '128k', out]);
       console.log(`  public/assets/sfx/${id}.mp3  (music)`);
     } else {
       const s = shapeOf(src, id);

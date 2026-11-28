@@ -34,7 +34,8 @@ import { glossPanel, inspectOverlay, type InspectExtra } from '../ui/inspect';
 import { glossFor } from '../ui/glossary';
 import { epiloguePanel, historyPanel } from '../ui/historyPanel';
 import { historyOf } from '../../data';
-import { battlefieldUrl, loadArt, loadBattlefield, orTimeout } from '../../assets/manifest';
+import { baseId } from '../../engine/cards';
+import { battlefieldUrl, loadArt, loadBattlefield, loadUi, orTimeout, uiUrl } from '../../assets/manifest';
 import { destroyTree, type Scene, type Stage } from '../stage';
 
 /* ---------------- layout ---------------- */
@@ -526,8 +527,12 @@ export function battleScene(stage: Stage, exit: () => void, sc: Scenario, next?:
         alpha: 0, duration: 0.4, onComplete: () => {
           destroyTree(panel); busy = false;
           handHeld = false; syncHand(shown, false);
-          if (guest) { void turnBanner(1); refreshInteractivity(); void pump(); }
-          else { void turnBanner(0); refreshInteractivity(); }
+          void (async () => {
+            await startBanner();
+            if (!alive) return;
+            if (guest) { void turnBanner(1); refreshInteractivity(); void pump(); }
+            else { void turnBanner(0); refreshInteractivity(); }
+          })();
         }
       });
     }, { primary: true, w: 340 });
@@ -1126,7 +1131,7 @@ export function battleScene(stage: Stage, exit: () => void, sc: Scenario, next?:
           break;
         }
         case 'move': {
-          audio.play(/ashva|bhalla|hetairoi/.test(tokens.get(e.uid)?.cardId ?? '') ? 'gallop' : 'march');
+          audio.play(isMounted(tokens.get(e.uid)?.cardId ?? '') ? 'gallop' : 'march');
           const v = tokens.get(e.uid);
           if (v) await gsap.to(v, { y: L.line.front, duration: 0.35, ease: 'power2.inOut' });
           break;
@@ -1141,15 +1146,17 @@ export function battleScene(stage: Stage, exit: () => void, sc: Scenario, next?:
           const t = durg[e.owner];
           if (a) await strike(a, t.x, t.y, CARDS[a.cardId].range === 'ranged');
           if (e.dmg > 0) { audio.play('fortHit'); shake(14); } else { audio.play('yantra'); }
+          // a fortified gate strikes back at the attacker
+          if ((after.players[e.owner].hq.thorns ?? 0) > 0) setTimeout(() => audio.play('gateStrike'), 260);
           break;
         }
         case 'order': {
           if (e.owner === 1) await enemyReveal(e.cardId, null);
-          if (e.cardId === 's_agni' || e.cardId === 'n_aakraman') {
-            audio.play(e.cardId === 's_agni' ? 'fire' : 'clash');
-          } else if (e.cardId === 's_chakravyuha' || e.cardId === 'n_visha_baan') { audio.play(e.cardId === 'n_visha_baan' ? 'bow' : 'drum'); shake(10); }
-          else if (e.cardId === 'sa_marubhumi') { audio.play('sandGust'); shake(10); }
-          else audio.play('coin');
+          const tacticSound: Record<string, Parameters<typeof audio.play>[0]> = {
+            t_bell: 'greatBell', t_war_horn: 'horn', t_volley: 'volley', t_fire_pots: 'firePots', t_caltrops: 'caltrops', t_mend: 'build', t_stitch: 'build'
+          };
+          audio.play(tacticSound[baseId(e.cardId)] ?? 'coin');
+          if (e.cardId === 't_fire_pots' || e.cardId === 't_volley') shake(8);
           break;
         }
         case 'yantraSet':
@@ -1224,8 +1231,12 @@ export function battleScene(stage: Stage, exit: () => void, sc: Scenario, next?:
           }
           break;
         }
-        case 'death':
+        case 'death': {
+          // a wall or tower falling sounds like timber, not a soldier
+          const cid = tokens.get(e.uid)?.cardId;
+          if (cid && CARDS[cid]?.kw?.includes('fort')) { audio.play('wallBreak'); shake(10); }
           break;
+        }
       }
     }
     reconcile(after, false, spawn);
@@ -1244,11 +1255,13 @@ export function battleScene(stage: Stage, exit: () => void, sc: Scenario, next?:
     return { x: L.laneX + L.laneW / 2, y: L.line.enemy };
   }
 
+  /** the horse families: Light Rider line and every mounted hybrid */
+  function isMounted(cardId: string): boolean { return /^(rider|h_(horse_archer|royal_horse_archer|lancer|crown_lancer|knight|paladin))/.test(baseId(cardId)); }
+
   function sfxFor(cardId: string): void {
     const c = CARDS[cardId];
-    audio.play('deploy');
-    if (/gaja|hasti/.test(cardId)) setTimeout(() => audio.play('elephant'), 150);
-    else if (c.sub === 'Cavalry' || /ashva|bhalla|hetairoi/.test(cardId)) setTimeout(() => audio.play('gallop'), 100);
+    audio.play(c.kw?.includes('fort') ? 'build' : 'deploy');
+    if (isMounted(cardId)) { setTimeout(() => audio.play('neigh'), 120); setTimeout(() => audio.play('gallop'), 420); }
     else if (c.kw?.includes('veg')) setTimeout(() => audio.play('march'), 100);
   }
 
@@ -1259,7 +1272,7 @@ export function battleScene(stage: Stage, exit: () => void, sc: Scenario, next?:
     gsap.fromTo(a, { tint: 0xfff2c0 }, { tint: 0xffffff, duration: 0.5 });
     gsap.fromTo(a.scale, { x: L.tok * 1.08, y: L.tok * 1.08 }, { x: L.tok, y: L.tok, duration: 0.35, ease: 'power2.out' });
     if (ranged) {
-      audio.play('bow');
+      audio.play(/^h_(pavise|arbalest)/.test(baseId(a.cardId)) ? 'crossbow' : 'bow');
       const ar = new Graphics().moveTo(-22, 0).lineTo(22, 0).stroke({ width: 3, color: 0xf0d79a }).poly([22, -6, 34, 0, 22, 6]).fill(0xf0d79a);
       ar.position.set(a.x, a.y - 40 * L.tok); ar.rotation = Math.atan2(ty - a.y, tx - a.x);
       fx.addChild(ar);
@@ -1421,7 +1434,7 @@ export function battleScene(stage: Stage, exit: () => void, sc: Scenario, next?:
   }
   /** a unit that breaks: a red flash, a banner, and (if it can) it slips back to the Support Line */
   async function routFx(v: TokenView, fled: boolean): Promise<void> {
-    audio.play('death');
+    audio.play('rout');
     const ring = new Graphics().circle(0, 0, 70).stroke({ width: 8, color: 0xd9463a }); ring.blendMode = 'add';
     ring.position.set(v.x, v.y); fx.addChild(ring);
     gsap.fromTo(ring.scale, { x: 0.4, y: 0.4 }, { x: 1.8, y: 1.8, duration: 0.6, ease: 'power2.out' });
@@ -1626,6 +1639,25 @@ export function battleScene(stage: Stage, exit: () => void, sc: Scenario, next?:
     gsap.from(box, { alpha: 0, y: box.y - 16, duration: 0.3, ease: 'power2.out' });
   }
 
+  /** the crossed banners sweep across the field as a battle opens, with the call to arms in the sky above the bell */
+  async function startBanner(): Promise<void> {
+    if (online || duel) return;
+    const tex = Texture.from(uiUrl('battle_start'));
+    const c = new Container(); c.eventMode = 'none';
+    const sp = new Sprite(tex); sp.anchor.set(0.5);
+    const fit = () => sp.scale.set(Math.min(L.W * 0.96 / tex.width, (L.phone ? 330 : 480) / tex.height));
+    fit(); tex.source.once('update', fit);
+    const t = new Text({ text: 'TO BATTLE', style: { fontFamily: FONT_TITLE, fontSize: L.phone ? 62 : 84, fontWeight: '700', letterSpacing: 16, fill: INK.goldPale, stroke: { color: 0x1a0d05, width: 8 }, dropShadow: { color: 0x000000, blur: 14, distance: 0, alpha: 0.9 } } });
+    t.anchor.set(0.5); t.y = (L.phone ? 150 : 200); if (t.width > L.W - 80) t.scale.set((L.W - 80) / t.width);
+    c.addChild(sp, t); c.position.set(L.W / 2, L.line.front); fx.addChild(c);
+    flash(0xffd27a, 0.2);
+    gsap.fromTo(sp.scale, { x: sp.scale.x * 0.82, y: sp.scale.y * 0.82 }, { x: sp.scale.x, y: sp.scale.y, duration: 0.9, ease: 'power2.out' });
+    await gsap.fromTo(c, { alpha: 0 }, { alpha: 1, duration: 0.3 });
+    await wait(1100);
+    await gsap.to(c, { alpha: 0, duration: 0.4 });
+    destroyTree(c);
+  }
+
   /* ---------------- turns ---------------- */
   async function turnBanner(who: PlayerIndex): Promise<void> {
     const bh = L.phone ? 120 : 140;
@@ -1635,7 +1667,7 @@ export function battleScene(stage: Stage, exit: () => void, sc: Scenario, next?:
     t.anchor.set(0.5); t.x = L.W / 2;
     if (t.width > L.W - 100) t.scale.set((L.W - 100) / t.width);
     const c = new Container(); c.addChild(band, t); c.y = L.line.front; fx.addChild(c);
-    audio.play(who === 0 ? 'conch' : 'drum');
+    audio.play(who === 0 ? 'turnBell' : 'drum');
     await gsap.fromTo(c, { alpha: 0 }, { alpha: 1, duration: 0.25 });
     await gsap.fromTo(t, { x: L.W / 2 - 40 }, { x: L.W / 2 + 10, duration: 0.8, ease: 'none' });
     await gsap.to(c, { alpha: 0, duration: 0.3 });
@@ -1837,15 +1869,24 @@ export function battleScene(stage: Stage, exit: () => void, sc: Scenario, next?:
     const c = new Container();
     const dim = new Graphics().rect(0, 0, W, H).fill({ color: 0x000000, alpha: 0.78 });
     dim.eventMode = 'static';
-    const face = new Sprite(cardFace(won ? sc.heroCard : sc.defeatCard)); face.anchor.set(0.5); face.scale.set(ph ? 0.4 : 0.75); face.position.set(W / 2, ph ? 160 : 365);
+    // a march duel ends over its own painting (the sky at the top is left open for the words); other battles keep the hero card
+    const scene = sc.run ? Texture.from(uiUrl(won ? 'victory' : 'defeat')) : null;
+    const face = scene ? new Sprite(scene) : new Sprite(cardFace(won ? sc.heroCard : sc.defeatCard));
+    if (scene) {
+      face.anchor.set(0.5); face.position.set(W / 2, H / 2);
+      const fit = () => face.scale.set(Math.max(W / scene.width, H / scene.height));
+      fit(); scene.source.once('update', fit);
+      dim.clear().rect(0, 0, W, H).fill({ color: won ? 0x120a04 : 0x05080f, alpha: won ? 0.3 : 0.45 });
+    } else { face.anchor.set(0.5); face.scale.set(ph ? 0.4 : 0.75); face.position.set(W / 2, ph ? 160 : 365); }
     const title = new Text({ text: won ? 'VICTORY' : 'DEFEAT', style: { fontFamily: FONT_TITLE, fontSize: ph ? 104 : 120, fontWeight: '700', letterSpacing: 24, fill: won ? INK.goldPale : 0xffb09a, stroke: { color: 0x000000, width: 8 } } });
-    title.anchor.set(0.5); title.position.set(W / 2, ph ? 345 : 675);
+    title.anchor.set(0.5); title.position.set(W / 2, scene ? (ph ? 70 : 150) : ph ? 345 : 675);
     if (ph) title.style.fontSize = 80;
     const sub = new Text({
       text: won ? sc.winText(st.turn) : sc.loseText,
       style: { fontFamily: FONT_STORY, fontWeight: '500', fontSize: Math.round(30 * (ph ? 1.1 : L.ui)), fontStyle: 'italic', fill: INK.creamBright, align: 'center', wordWrap: true, wordWrapWidth: W - (ph ? 260 : 200) }
     });
-    sub.anchor.set(0.5); sub.position.set(W / 2, ph ? 442 : 775);
+    sub.anchor.set(0.5); sub.position.set(W / 2, scene ? (ph ? 150 : 260) : ph ? 442 : 775);
+    if (scene) { sub.style.stroke = { color: 0x000000, width: 5 }; sub.style.fill = 0xfff3d6; }
     // the victory button carries a battle's name, so it is the widest; the rest share what is left
     const kk = ph ? 1.1 : 1, wMain = 340, wSide = ph ? 230 : 300;
     const run = sc.run;
@@ -1861,8 +1902,8 @@ export function battleScene(stage: Stage, exit: () => void, sc: Scenario, next?:
     }
     const widths = btns.map((_, i) => (i === 0 ? wMain : wSide) * kk), gap = 24 * kk;
     let bx = W / 2 - (widths.reduce((a, v) => a + v, 0) + gap * (btns.length - 1)) / 2;
-    btns.forEach((b, i) => { b.position.set(bx + widths[i] / 2, ph ? 580 : 885); bx += widths[i] + gap; });
-    c.addChild(dim, face, title, sub, ...btns);
+    btns.forEach((b, i) => { b.position.set(bx + widths[i] / 2, scene ? H - (ph ? 50 : 80) : ph ? 580 : 885); bx += widths[i] + gap; });
+    c.addChild(...(scene ? [face, dim] : [dim, face]), title, sub, ...btns);
     if (won && historyOf(sc.id)) {
       const hb = makeButton('History', () => showHistory(), { w: 190, ui: ph ? 0.85 : 1 });
       hb.position.set(ph ? W - 118 : W - 190, ph ? 40 : 70);
@@ -1871,7 +1912,8 @@ export function battleScene(stage: Stage, exit: () => void, sc: Scenario, next?:
     s.addChild(c);
     overlay = { kind: 'end', view: c, won };
     if (animate) {
-      gsap.from(face.scale, { x: 0.3, y: 0.3, duration: 0.6, ease: 'back.out(1.4)' });
+      if (scene) gsap.from(face, { alpha: 0, duration: 0.9 });
+      else gsap.from(face.scale, { x: 0.3, y: 0.3, duration: 0.6, ease: 'back.out(1.4)' });
       gsap.from([title, sub, ...btns], { alpha: 0, y: '+=30', duration: 0.6, stagger: 0.12, delay: 0.3 });
     }
   }
@@ -2001,7 +2043,7 @@ export function battleArt(sc: Scenario): string[] {
 
 /** preload the battlefield and paintings so the board never appears without them */
 export async function preloadBattle(sc: Scenario): Promise<void> {
-  await orTimeout(Promise.all([loadBattlefield(sc.battlefield), loadArt(battleArt(sc))]), 20000);
+  await orTimeout(Promise.all([loadBattlefield(sc.battlefield), loadArt(battleArt(sc)), loadUi('battle_start'), ...(sc.run ? [loadUi('victory'), loadUi('defeat')] : [])]), 20000);
 }
 
 export type { Sfx };

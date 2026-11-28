@@ -115,6 +115,11 @@ const FIELDS = new Set(fields as string[]);
 /** a stop whose battlefield is not painted yet borrows First Ford */
 export const battlefieldName = (name: string): string => (FIELDS.has(name) ? name : 'first_ford');
 export const battlefieldUrl = (name: string): string => `${BASE}assets/battlefields/${battlefieldName(name)}.webp`;
+/** the six interface paintings in public/assets/ui: crest, battle_start, victory, defeat, march_won (icon is for the app only) */
+export type UiArt = 'crest' | 'battle_start' | 'victory' | 'defeat' | 'march_won';
+export const uiUrl = (name: UiArt): string => `${BASE}assets/ui/ui_${name}.webp`;
+export const loadUi = (name: UiArt): Promise<Texture> => Assets.load<Texture>(uiUrl(name));
 export async function loadBattlefield(name: string): Promise<Texture> {
+  if (name.startsWith('ui_')) return loadUi(name.slice(3) as UiArt);
   return Assets.load<Texture>(battlefieldUrl(name));
 }

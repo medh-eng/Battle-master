@@ -402,10 +402,10 @@ export function loadRun(st: Store | null = store()): RunState | null {
 }
 export function clearRun(st: Store | null = store()): void { try { st?.removeItem?.(KEY); st?.removeItem?.(BACKUP); } catch { /* blocked */ } }
 
-export interface Meta { marches: number; victories: number; bestStop: number; discovered: string[] }
+export interface Meta { marches: number; victories: number; bestStop: number; discovered: string[]; /** the Field Manual has been shown once */ tutorial: boolean }
 export function loadMeta(st: Store | null = store()): Meta {
-  try { const m = JSON.parse(st?.getItem(META) || 'null'); if (m) return { marches: m.marches || 0, victories: m.victories || 0, bestStop: m.bestStop || 0, discovered: m.discovered || [] }; } catch { /* fresh */ }
-  return { marches: 0, victories: 0, bestStop: 0, discovered: [] };
+  try { const m = JSON.parse(st?.getItem(META) || 'null'); if (m) return { marches: m.marches || 0, victories: m.victories || 0, bestStop: m.bestStop || 0, discovered: m.discovered || [], tutorial: !!m.tutorial }; } catch { /* fresh */ }
+  return { marches: 0, victories: 0, bestStop: 0, discovered: [], tutorial: false };
 }
 export function saveMeta(m: Meta, st: Store | null = store()): void { try { st?.setItem(META, JSON.stringify(m)); } catch { /* blocked */ } }
 /** remember every card the player has fielded (the Codex shows the rest as silhouettes) */

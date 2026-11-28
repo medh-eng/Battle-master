@@ -18,9 +18,10 @@ import { view } from './game/view';
 import { canFullscreen, isFullscreen, toggleFullscreen } from './game/fullscreen';
 import { titleScene } from './game/scenes/title';
 import { battleScene, preloadBattle } from './game/scenes/battle';
+import { tutorialScene } from './game/scenes/tutorial';
 import { campScreen, codexScreen, lostScreen, musterScreen, rewardScreen, routeScreen, summaryScreen } from './game/scenes/march';
 import { audio } from './game/audio';
-import { CARD_ART, loadArt, loadBattlefield } from './assets/manifest';
+import { CARD_ART, loadArt, loadBattlefield, loadUi } from './assets/manifest';
 import { FONT_BODY, FONT_SERIF, FONT_STORY, FONT_TITLE } from './game/theme';
 import {
   beginBattle, clearRun, discover, finishBattle, loadMeta, loadRun, newRun, quickRun, retry, saveMeta, saveRun, type RunState
@@ -54,7 +55,7 @@ async function boot(): Promise<void> {
 
   const stage = new Stage();
   await stage.init();
-  await loadBattlefield('title');
+  await Promise.all([loadBattlefield('title'), loadUi('crest')]);
   document.getElementById('boot')?.remove();
   // every painting is small: load them all while the title is up, so camp and battle faces are ready
   const artReady = loadArt(CARD_ART);
@@ -77,7 +78,7 @@ async function boot(): Promise<void> {
     save();
     switch (s.phase) {
       case 'route': stage.show(routeScreen(stage, s, go, title)); break;
-      case 'camp': stage.show(campScreen(stage, s, save, () => { beginBattle(s); go(); }, title)); break;
+      case 'camp': stage.show(campScreen(stage, s, save, () => { beginBattle(s); go(); }, title, () => manual(go))); break;
       case 'battle': fight(s); break;
       case 'reward': stage.show(rewardScreen(stage, s, go)); break;
       case 'lost': stage.show(lostScreen(stage, s, () => { retry(s); go(); }, () => endMarch(s))); break;
@@ -107,13 +108,25 @@ async function boot(): Promise<void> {
     stage.show(summaryScreen(stage, s, march, title));
   };
 
-  const march = (): void => {
+  /** the Field Manual; `back` is where Close and the last button lead. Seeing it once is remembered. */
+  const manual = (back: () => void, finishLabel = 'Back to the game'): void => {
+    void loading(artReady).then(() => {
+      const seen = (): void => { const m = loadMeta(); if (!m.tutorial) { m.tutorial = true; saveMeta(m); } };
+      stage.show(tutorialScene(stage, { finishLabel, onFinish: () => { seen(); back(); }, onExit: () => { seen(); back(); } }));
+    });
+  };
+
+  const muster = (): void => {
     void loading(artReady).then(() => stage.show(musterScreen(stage, fams => {
       run = newRun(fams);
       const m = loadMeta(); m.marches += 1; saveMeta(m);
       discover(run);
       go();
-    }, title)));
+    }, title, () => manual(muster))));
+  };
+  /** the first new march begins with the Field Manual; every later one goes straight to the muster */
+  const march = (): void => {
+    if (loadMeta().tutorial) muster(); else manual(muster, 'Muster my march');
   };
 
   const title = (): void => {
@@ -124,6 +137,7 @@ async function boot(): Promise<void> {
       march,
       quick: () => fight(quickRun(), true),
       codex: () => void loading(artReady).then(() => stage.show(codexScreen(stage, title))),
+      learn: () => manual(title),
       record
     }));
   };
